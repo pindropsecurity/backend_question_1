@@ -26,6 +26,7 @@ Some tips:
 - Classes, inheritance and encapsulation are your friends
 - Code readability >> subtle performance gains
 - Unit tests
+- Your implementation should use *only* Python standard library modules
 
 ---
 ####MySQL
