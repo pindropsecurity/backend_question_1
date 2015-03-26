@@ -22,11 +22,14 @@ You are given a tree representing a basic mathematical expression, where:
  - So, if you have a subtraction node with 1, 2 and 3 you would evaluate as 1 - 2 - 3 = -4. Write a method that calculates the value of such a tree.
 Write an python program that calculates the value of the tree. Assume your code is part of a production grade library, so exceptional cases should be handled accordingly.
 
+**NOTE**
+- Your implementation should use *only* Python standard library modules. Do not `import some_graph_libary`. Write your own graph implementation and traversal methods.
+
 Some tips:
 - Classes, inheritance and encapsulation are your friends
 - Code readability >> subtle performance gains
 - Unit tests
-- Your implementation should use *only* Python standard library modules
+
 
 ---
 ####MySQL
