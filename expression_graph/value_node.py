@@ -19,18 +19,18 @@ class IntegralValueNode(ValueNode):
         if type(value) is not int:
             raise NodeValueTypeException("{0} is not an integer".format(value))
         else:
-            self.super().__init(value)
+            super().__init__(value)
 
 class RationalValueNode(ValueNode):
     def __init__(self, value):
         if type(value) is not Fraction:
             raise NodeValueTypeException("{0} is not a fraction".format(value))
         else:
-            self.super().__init(value)
+            super().__init__(value)
 
 class RealValueNode(ValueNode):
     def __init__(self, value):
         if type(value) is not float:
             raise NodeValueTypeException("{0} is not a float".format(value))
         else:
-            self.super().__init(value)
+            super().__init__(value)

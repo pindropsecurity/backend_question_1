@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-from .operator import Operator
+from .operator import Operator, IntegralOperator, RationalOperator, RealOperator
 from .expression_node import ExpressionNode
-from .value_node import ValueNode, IntegralNode, RationalNode, RealNode
+from .value_node import ValueNode, IntegralValueNode, RationalValueNode, \
+    RealValueNode
 
 
 class InvalidOperatorException(Exception):
@@ -12,14 +13,14 @@ class InvalidValueException(Exception):
     pass
 
 class OperatorNode(ExpressionNode):
-    nodeTypes = [RealNode, RationalNode, IntegralNode]
+    nodeTypes = [RealValueNode, RationalValueNode, IntegralValueNode]
     
     def __init__(self, operator, lnode, rnode):
-        if not isinstance(Operator, operator):
+        if not isinstance(operator, Operator):
             raise InvalidOperatorException('{0} is not a supported operator'.format(operator))
-        elif not isinstance(ExpressionNode, lval):
+        elif not isinstance(lnode, ExpressionNode):
             raise InvalidValueException('{0} is not a valid node'.format(lnode))
-        elif not isinstance(ExpressionNode, rval):
+        elif not isinstance(rnode, ExpressionNode):
             raise InvalidValueException('{0} is not a valid node'.format(rnode))
         else:
             self._operator = operator
@@ -39,28 +40,28 @@ class OperatorNode(ExpressionNode):
         # this part is a bit concerning to me, as it scales poorly
         # and is quite brittle. I'll try to find a more elegant solution later.
         
-        if lnode_type == RealNode:
+        if lnode_type == RealValueNode:
             effective_operator = RealOperator(self.__operator.symbol())
-            if rnode_type == RationalNode:
+            if rnode_type == RationalValueNode:
                 effective_rvalue = rvalue.numerator() // rvalue.denominator()
-            elif rnode_type == IntegralNode:
+            elif rnode_type == IntegralValueNode:
                 effective_rvalue = float(rvalue)
             else:
                 effective_rvalue = rvalue
-        elif lnode_type == RationalNode:
-            if rnode_type == RealNode:
+        elif lnode_type == RationalValueNode:
+            if rnode_type == RealValueNode:
                 effective_operator = RealOperator(self.__operator.symbol())
                 effective_lvalue = lvalue.numerator() // lvalue.denominator()
             else:
-                effective_operator = RationalOperator(self.__operator.symbol())
+                effective_operator = RationalOperator(self._operator.symbol())
         else:
-            if rnode_type == RealNode:
-                effective_operator = RealOperator(self.__operator.symbol())
+            if rnode_type == RealValueNode:
+                effective_operator = RealOperator(self._operator.symbol())
                 effective_lvalue = float(lvalue)
-            elif rnode_type == RationalNode:
-                effective_operator = RationalOperator(self.__operator.symbol())
+            elif rnode_type == RationalValueNode:
+                effective_operator = RationalOperator(self._operator.symbol())
             else:
-                effective_operator = IntegralOperator(self.__operator.symbol())
+                effective_operator = IntegralOperator(self._operator.symbol())
         
         return effective_operator.apply(effective_lvalue, effective_rvalue)
         
