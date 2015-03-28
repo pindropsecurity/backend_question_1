@@ -24,7 +24,11 @@ class Operator(str):
     def apply(self, operand, operahend):
         return self.operation.get(self._operator)(operand, operahend)
         
+    def symbol(self):
+        return self._operator
 
+
+    
 class IntegralOperator(Operator):
     operation = {Operator.ADD: int.__add__,
                  Operator.SUBTRACT: int.__sub__,

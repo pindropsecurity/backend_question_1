@@ -2,5 +2,5 @@
 
 from unittest import TestCase
 
-class ExpressionGraphTest(TestCase);
+class ExpressionGraphTest(TestCase):
     pass

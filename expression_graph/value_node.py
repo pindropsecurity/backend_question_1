@@ -1,13 +1,36 @@
 #!/usr/bin/python3
 
-class ValueNode(ExpressionNode);
+from .expression_node import ExpressionNode
+
+class NodeValueTypeException(Exception):
     pass
 
-class IntegralValueNode(ValueNode);
-    pass
 
-class RationalValueNode(ValueNode);
-    pass
+class ValueNode(ExpressionNode):
+    def __init__(self, value):
+        self._value = value
 
-class RealValueNode(ValueNode);
-    pass
+    def eval(self):
+        return self._value
+
+    
+class IntegralValueNode(ValueNode):
+    def __init__(self, value):
+        if type(value) is not int:
+            raise NodeValueTypeException("{0} is not an integer".format(value))
+        else:
+            self.super().__init(value)
+
+class RationalValueNode(ValueNode):
+    def __init__(self, value):
+        if type(value) is not Fraction:
+            raise NodeValueTypeException("{0} is not a fraction".format(value))
+        else:
+            self.super().__init(value)
+
+class RealValueNode(ValueNode):
+    def __init__(self, value):
+        if type(value) is not float:
+            raise NodeValueTypeException("{0} is not a float".format(value))
+        else:
+            self.super().__init(value)

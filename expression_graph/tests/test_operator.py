@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 from fractions import Fraction
 from expression_graph.operator import Operator, IntegralOperator, \
     RationalOperator, RealOperator, UnsupportedOperatorException
