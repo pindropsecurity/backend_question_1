@@ -43,3 +43,22 @@ class ExpressionGraphTest(TestCase):
 
     def testCaptureIncompleteExpression(self):
         self.assertRaises(IncompleteExpressionException, LeftmostEvaluatingExpressionGraph, 2, '+', 2, '-', 6, '*', 4, '/')
+
+
+    def testExtendedWithFractionalResultExpression(self):
+        graph = LeftmostEvaluatingExpressionGraph(2, '+', 2, '-', 6, '*', 4, '/', 13)
+        self.assertEqual('2 + 2 - 6 * 4 / 13', str(graph))
+        self.assertEqual(Fraction(-8, 13), graph.eval())
+
+
+    def testExtendedWithRealResultExpression(self):
+        graph = LeftmostEvaluatingExpressionGraph(2, '+', 2.5, '-', 6, '*', 4, '/', 13)
+        self.assertEqual('2 + 2.5 - 6 * 4 / 13', str(graph))
+        result = ((2 + 2.5 - 6) * 4) / 13
+        self.assertEqual(result, graph.eval())
+
+
+
+
+
+       
