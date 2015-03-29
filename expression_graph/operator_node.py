@@ -23,6 +23,7 @@ class OperatorNode(ExpressionNode):
         if not isinstance(operator, Operator):
             raise InvalidOperatorException('{0} is not a supported operator'.format(operator))
         elif not isinstance(lnode, ExpressionNode):
+            print(type(lnode))
             raise InvalidValueException('{0} is not a valid node'.format(lnode))
         elif not isinstance(rnode, ExpressionNode):
             raise InvalidValueException('{0} is not a valid node'.format(rnode))
@@ -54,7 +55,7 @@ class OperatorNode(ExpressionNode):
             elif rvalue_type == float:
                 pass
             else:
-                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lvalue_type))
             
         elif lvalue_type == Fraction:
             if rvalue_type == float:
@@ -63,7 +64,7 @@ class OperatorNode(ExpressionNode):
             elif rvalue_type in [int, Fraction]:
                 effective_operator = RationalOperator(opsym)
             else:
-                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lvalue_type))
             
         elif lvalue_type == int:
             if rvalue_type == float:
@@ -74,9 +75,9 @@ class OperatorNode(ExpressionNode):
             elif rvalue_type == int:
                 effective_operator = IntegralOperator(opsym)
             else:
-                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(rnode_type))                
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(rvalue_type))                
         else:
-            raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+            raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lvalue_type))
                 
         return effective_operator.apply(effective_lvalue, effective_rvalue)
 

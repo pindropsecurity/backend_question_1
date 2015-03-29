@@ -50,6 +50,8 @@ class LeftmostEvaluatingExpressionGraph(ExpressionGraph):
         
         if elements is None or (head is None and len(elements) == 0):
             raise EmptyExpressionException()
+        elif (head is None and (1 < len(elements) < 3)) or (head is not None and len(elements) < 2):
+            raise IncompleteExpressionException()
         
         self._node = None
         self._graph = None
@@ -86,19 +88,20 @@ class LeftmostEvaluatingExpressionGraph(ExpressionGraph):
 
         opvalue = elements[next_element.value()]
         next_element.iterate()
-
         rvalue = elements[next_element.value()]
         rnode = assignValueNodeType(rvalue)
 
         self._node = OperatorNode(Operator(opvalue), lnode, rnode)
+        remaining_elements = None
         try:
             next_element.iterate()
             remainder_start = next_element.value()
             remaining_elements = elements[remainder_start:]
-            self._node = LeftmostEvaluatingExpressionGraph(*remaining_elements, head=self._node)
         except IncompleteExpressionException as e:
             pass
         finally:
+            if remaining_elements is not None:
+                self._node = LeftmostEvaluatingExpressionGraph(*remaining_elements, head=self._node)
             super().__init__(self._node)
             
     def eval(self):

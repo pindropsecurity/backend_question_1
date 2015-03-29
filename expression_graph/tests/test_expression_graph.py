@@ -40,3 +40,6 @@ class ExpressionGraphTest(TestCase):
         graph = LeftmostEvaluatingExpressionGraph(2, '+', 2, '-', 6, '*', 4, '/', 2)
         self.assertEqual('2 + 2 - 6 * 4 / 2', str(graph))
         self.assertEqual(-4, graph.eval())
+
+    def testCaptureIncompleteExpression(self):
+        self.assertRaises(IncompleteExpressionException, LeftmostEvaluatingExpressionGraph, 2, '+', 2, '-', 6, '*', 4, '/')
