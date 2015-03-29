@@ -33,7 +33,9 @@ class ExpressionGraph(object):
             return self._graph._node.depth()
         
     def __str__(self):
-        if isinstance(self._graph, ExpressionNode):
+        if self._graph is None:
+            return ''
+        elif isinstance(self._graph, ExpressionNode):
             return str(self._graph)
         else:
             return str(self._graph._node)
@@ -89,26 +91,29 @@ class LeftmostEvaluatingExpressionGraph(ExpressionGraph):
         rnode = assignValueNodeType(rvalue)
 
         self._node = OperatorNode(Operator(opvalue), lnode, rnode)
-        
         try:
             next_element.iterate()
             remainder_start = next_element.value()
             remaining_elements = elements[remainder_start:]
-            super().__init__(LeftmostEvaluatingExpressionGraph(*remaining_elements, head=self._node))
+            self._node = LeftmostEvaluatingExpressionGraph(*remaining_elements, head=self._node)
         except IncompleteExpressionException as e:
+            pass
+        finally:
             super().__init__(self._node)
-
-
+            
     def eval(self):
         """ Evaluate the graph. This works because only the rightmost node of 
             the graph is actually exposed as the handle of the graph,
             so all nodes are guaranteed to be evaluated in the correct order."""
-        print(self)
-        if isinstance(self._graph, ExpressionNode):
+        if self._graph is None:
+            return None
+        elif isinstance(self._graph, ExpressionNode):
             return self._graph.eval()
         else:
             return self._graph._node.eval()
-        
+
+
+
 def assignValueNodeType(value):
     """ Utility function to map a value to its correct ValueNode type. """
     val_type = type(value)

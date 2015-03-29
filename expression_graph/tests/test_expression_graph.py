@@ -31,6 +31,11 @@ class ExpressionGraphTest(TestCase):
         self.assertEqual('4 / 2', str(graph))
         self.assertEqual(Fraction(4, 2), graph.eval())
 
+    def testFourValueExpression(self):
+        graph = LeftmostEvaluatingExpressionGraph(2, '+', 2, '-', 6, '*', 4)
+        self.assertEqual('2 + 2 - 6 * 4', str(graph))
+        self.assertEqual(-8, graph.eval())
+        
     def testExtendedExpression(self):
         graph = LeftmostEvaluatingExpressionGraph(2, '+', 2, '-', 6, '*', 4, '/', 2)
         self.assertEqual('2 + 2 - 6 * 4 / 2', str(graph))
