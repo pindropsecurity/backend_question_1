@@ -48,7 +48,7 @@ class LeftmostEvaluatingExpressionGraph(ExpressionGraph):
         if 'head' in kwargs.keys():
             head = kwargs['head']
         
-        if elements is None or (head is None and len(elements) == 0):
+        if elements is None or len(elements) == 0 or elements[0] is None:
             raise EmptyExpressionException()
         elif (head is None and (1 < len(elements) < 3)) or (head is not None and len(elements) < 2):
             raise IncompleteExpressionException()
