@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from fractions import Fraction
 from .expression_node import ExpressionNode
 
 class NodeValueTypeException(Exception):
@@ -8,11 +9,13 @@ class NodeValueTypeException(Exception):
 
 class ValueNode(ExpressionNode):
     def __init__(self, value):
-        self._value = value
+        super().__init__(value)
 
     def eval(self):
-        return self._value
+        return self._node
 
+    def depth(self):
+        return 1
     
 class IntegralValueNode(ValueNode):
     def __init__(self, value):

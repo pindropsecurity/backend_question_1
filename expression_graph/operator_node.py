@@ -1,16 +1,20 @@
 #!/usr/bin/python3
 
+from fractions import Fraction
 from .operator import Operator, IntegralOperator, RationalOperator, RealOperator
 from .expression_node import ExpressionNode
 from .value_node import ValueNode, IntegralValueNode, RationalValueNode, \
     RealValueNode
 
+class UnsupportedNodeTypeException(Exception):
+    pass
 
 class InvalidOperatorException(Exception):
     pass
 
 class InvalidValueException(Exception):
     pass
+
 
 class OperatorNode(ExpressionNode):
     nodeTypes = [RealValueNode, RationalValueNode, IntegralValueNode]
@@ -23,45 +27,63 @@ class OperatorNode(ExpressionNode):
         elif not isinstance(rnode, ExpressionNode):
             raise InvalidValueException('{0} is not a valid node'.format(rnode))
         else:
-            self._operator = operator
+            super().__init__(operator)
             self._lnode = lnode
             self._rnode = rnode
 
     def eval(self):
+        opsym = str(self._node)
         lvalue = self._lnode.eval()
         rvalue = self._rnode.eval()
-        lnode_type = type(self._lnode)
-        rnode_type = type(self._rnode)
+        lvalue_type = type(lvalue)
+        rvalue_type = type(rvalue)
 
-        effective_operator = self._operator
+        effective_operator = self._node
         effective_lvalue = lvalue
         effective_rvalue = rvalue
 
-        # this part is a bit concerning to me, as it scales poorly
-        # and is quite brittle. I'll try to find a more elegant solution later.
+        # this part is a bit concerning to me, as it scales poorly and is
+        # quite brittle. I'll try to find a more elegant solution later.
         
-        if lnode_type == RealValueNode:
-            effective_operator = RealOperator(self.__operator.symbol())
-            if rnode_type == RationalValueNode:
+        if lvalue_type == float:
+            effective_operator = RealOperator(opsym)
+            if rvalue_type == Fraction:
                 effective_rvalue = rvalue.numerator() // rvalue.denominator()
-            elif rnode_type == IntegralValueNode:
+            elif rvalue_type == int:
                 effective_rvalue = float(rvalue)
+            elif rvalue_type == float:
+                pass
             else:
-                effective_rvalue = rvalue
-        elif lnode_type == RationalValueNode:
-            if rnode_type == RealValueNode:
-                effective_operator = RealOperator(self.__operator.symbol())
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+            
+        elif lvalue_type == Fraction:
+            if rvalue_type == float:
+                effective_operator = RealOperator(opsym)
                 effective_lvalue = lvalue.numerator() // lvalue.denominator()
+            elif rvalue_type in [int, Fraction]:
+                effective_operator = RationalOperator(opsym)
             else:
-                effective_operator = RationalOperator(self._operator.symbol())
-        else:
-            if rnode_type == RealValueNode:
-                effective_operator = RealOperator(self._operator.symbol())
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+            
+        elif lvalue_type == int:
+            if rvalue_type == float:
+                effective_operator = RealOperator(opsym)
                 effective_lvalue = float(lvalue)
-            elif rnode_type == RationalValueNode:
-                effective_operator = RationalOperator(self._operator.symbol())
+            elif rvalue_type == Fraction:
+                effective_operator = RationalOperator(opsym)
+            elif rvalue_type == int:
+                effective_operator = IntegralOperator(opsym)
             else:
-                effective_operator = IntegralOperator(self._operator.symbol())
-        
+                raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(rnode_type))                
+        else:
+            raise UnsupportedNodeTypeException('{0} is not a supported node type'.format(lnode_type))
+                
         return effective_operator.apply(effective_lvalue, effective_rvalue)
+
+    
+    def __str__(self):
+        s = str(self._lnode) + ' ' + str(self._node) + ' ' + str(self._rnode)
+        return s
         
+    def depth(self):
+        return 1 + max(self._lnode.depth(), self._rnode.depth())

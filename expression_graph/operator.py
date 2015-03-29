@@ -24,7 +24,7 @@ class Operator(str):
     def apply(self, operand, operahend):
         return self.operation.get(self._operator)(operand, operahend)
         
-    def symbol(self):
+    def __str__(self):
         return self._operator
 
 
