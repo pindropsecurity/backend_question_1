@@ -1,6 +1,6 @@
 print 'Hello World'
 
 class node:
-    pass
+    child
 
 print 'Bye-bye World'
