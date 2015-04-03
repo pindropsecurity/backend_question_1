@@ -5,7 +5,16 @@ def reduce(tokenizer):
     toktyp,tokval, _,_,_ = tokenizer.next()
 
     if toktyp == tokenize.OP and '+' in tokval:
-        accum = 0
+
+        #
+        # Enforce the fact that every node has at least 2 children
+        #
+        accum = reduce(tokenizer)  
+        accum += reduce(tokenizer)
+
+        #
+        # Manager the case for > 2
+        #
         while True:
             try:
                 accum += reduce(tokenizer)
@@ -25,6 +34,8 @@ def reduce(tokenizer):
         raise SyntaxError
 
 t = '+1 2 +1 3 2'
+#t = '+1'
+t = '+1 2'
 
 tokenizer = tokenize.generate_tokens(iter([t]).next)
 
