@@ -28,7 +28,7 @@ def reduce(tokenizer):
         accum = operate(tokval, accum, reduce(tokenizer))
  
         #
-        # Manager the case for > 2
+        # Manage the case for > 2
         #
         while True:
             try:
@@ -48,13 +48,13 @@ def reduce(tokenizer):
         print "Habemus splat"
         raise SyntaxError
 
-#t = '+1 2 +1 3 2'
-#t = '+1'
-#t = '+1 2'
-t = '+1 2 -1 3 2'
+def treeCalc (t):
+    tokenizer = tokenize.generate_tokens(iter([t]).next)
+    print reduce(tokenizer)
+    tokenizer.close()
 
-tokenizer = tokenize.generate_tokens(iter([t]).next)
+#treeCalc('+1 2 +1 3 2')
+#treeCalc('+1')
+#treeCalc('+1 2')
+#treeCalc('+1 2 -1 3 2')
 
-print reduce(tokenizer)
-
-tokenizer.close()
