@@ -50,8 +50,9 @@ def reduce(tokenizer):
 
 def tree (t):
     tokenizer = tokenize.generate_tokens(iter([t]).next)
-    print reduce(tokenizer)
+    result = reduce(tokenizer)
     tokenizer.close()
+    return result
 
 #treeCalc('+1 2 +1 3 2')
 #treeCalc('+1')

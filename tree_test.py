@@ -3,6 +3,7 @@ import tree
 
 class TestTreeFunction(unittest.TestCase):
     def test_hello(self):
-        tree.tree('+1 2 +1 3 2')
+        kk = tree.tree('+ 1 2')
+        self.assertEqual(tree.tree('+ 1 2'), 3, 'incorrect addition of + 1 2')
 
 unittest.main()
