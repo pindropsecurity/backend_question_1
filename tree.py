@@ -55,6 +55,6 @@ def tree (t):
 
 #treeCalc('+1 2 +1 3 2')
 #treeCalc('+1')
-tree('+1 2')
-tree('+1 2 -1 3 2')
+#tree('+1 2')
+#tree('+1 2 -1 3 2')
 
