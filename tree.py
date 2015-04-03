@@ -48,13 +48,13 @@ def reduce(tokenizer):
         print "Habemus splat"
         raise SyntaxError
 
-def treeCalc (t):
+def tree (t):
     tokenizer = tokenize.generate_tokens(iter([t]).next)
     print reduce(tokenizer)
     tokenizer.close()
 
 #treeCalc('+1 2 +1 3 2')
 #treeCalc('+1')
-#treeCalc('+1 2')
-#treeCalc('+1 2 -1 3 2')
+tree('+1 2')
+tree('+1 2 -1 3 2')
 
