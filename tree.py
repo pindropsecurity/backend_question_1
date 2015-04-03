@@ -25,11 +25,18 @@ class tree:
             else:
                 print 'THIS IS A SPLAT'
 
-        #src = StringIO.StringIO(inStr).readline
-        #toktyp, toksym, _, _, _ = tokenize.generate_tokens(src)
+        src = StringIO.StringIO(iter([inStr]).next)
         #print toktyp
         #tokenize.generate_tokens(StringIO(inStr).readline);
 
 
-t = tree('[+[1 2 [- 3 2]]]')
+#t = tree('[+[1 2 [- 3 2]]]')
+t = '[+[1 2 [- 3 2]]]'
+
+tokenizer = tokenize.generate_tokens(iter([t]).next)
+print type(tokenizer)
+top = tokenizer.next()
+print top
+top = tokenizer.next()
+print top
 print 'Bye-bye World'
