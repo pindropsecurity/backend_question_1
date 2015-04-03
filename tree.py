@@ -2,6 +2,19 @@ import tokenize
 
 operators = ['+', '-', '*', '/']
 
+def operate(op, val1, val2):
+    if (op == '+'):
+        return val1 + val2
+    elif (op == '-'):
+        return val1 - val2
+    elif (op == '*'):
+        return val1 * val2
+    elif (op == '/'):
+        return val1 / val2
+    else:
+       assert False, 'Lost all hope'
+
+
 def reduce(tokenizer):
 
     toktyp,tokval, _,_,_ = tokenizer.next()
@@ -12,14 +25,14 @@ def reduce(tokenizer):
         # Enforce the fact that every node has at least 2 children
         #
         accum = reduce(tokenizer)  
-        accum += reduce(tokenizer)
+        accum = operate(tokval, accum, reduce(tokenizer))
  
         #
         # Manager the case for > 2
         #
         while True:
             try:
-                accum += reduce(tokenizer)
+                accum = operate(tokval, accum, reduce(tokenizer))
             except StopIteration:
                 return accum
             except EOFError:
