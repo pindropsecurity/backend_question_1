@@ -1,42 +1,31 @@
 import tokenize 
-import io
-import StringIO
-import sys
 
 class tree:
-    def __init__(self, inStr):
-        for toktyp, toksym, _, _, _ in tokenize.generate_tokens(iter([inStr]).next):
-            if toktyp == tokenize.NUMBER:
-                print 'THIS IS A NUMBER'
-            elif toktyp == tokenize.OP and '[' in toksym:
-                print 'THIS IS A ['
-            elif toktyp == tokenize.OP and ']' in toksym:
-                print 'THIS IS A ]'
-            elif toktyp == tokenize.OP and '+' in toksym:
-                print 'THIS IS A +'
-            elif toktyp == tokenize.OP and '-' in toksym:
-                print 'THIS IS A -'
-            elif toktyp == tokenize.OP and '*' in toksym:
-                print 'THIS IS A *'
-            elif toktyp == tokenize.OP and '/' in toksym:
-                print 'THIS IS A /'
-            elif toktyp == tokenize.ENDMARKER:
-                print 'THE END'
-            else:
-                print 'THIS IS A SPLAT'
+    def __init__(self, tokenizer):
+        toktyp,tokval, _,_,_ = tokenizer.next()
+        print toktyp
+        print tokval
+        if toktyp == tokenize.OP and '+' in tokval:
+            print "Habemus +"
+            tree(tokenizer)
+        elif toktyp == tokenize.OP and '-' in tokval:
+            print "Habemus -"
+        elif toktyp == tokenize.OP and '*' in tokval:
+            print "Habemus *"
+        elif toktyp == tokenize.OP and '/' in tokval:
+            print "Habemus /"
+        else:
+            print "Habemus splat"
 
-        src = StringIO.StringIO(iter([inStr]).next)
-        #print toktyp
-        #tokenize.generate_tokens(StringIO(inStr).readline);
-
-
-#t = tree('[+[1 2 [- 3 2]]]')
-t = '[+[1 2 [- 3 2]]]'
+t = '+1 2 - 3 2'
 
 tokenizer = tokenize.generate_tokens(iter([t]).next)
-print type(tokenizer)
-top = tokenizer.next()
-print top
-top = tokenizer.next()
-print top
+toktyp,tokval, _,_,_ = tokenizer.next()
+
+if toktyp == tokenize.OP or '[' in tokval:
+   tree(tokenizer)
+else:
+   print 'bad tree'
+
+tokenizer.close()
 print 'Bye-bye World'
