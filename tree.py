@@ -1,17 +1,19 @@
 import tokenize 
 
+operators = ['+', '-', '*', '/']
+
 def reduce(tokenizer):
 
     toktyp,tokval, _,_,_ = tokenizer.next()
 
-    if toktyp == tokenize.OP and '+' in tokval:
+    if toktyp == tokenize.OP and any(s in tokval for s in operators):
 
         #
         # Enforce the fact that every node has at least 2 children
         #
         accum = reduce(tokenizer)  
         accum += reduce(tokenizer)
-
+ 
         #
         # Manager the case for > 2
         #
@@ -35,7 +37,7 @@ def reduce(tokenizer):
 
 t = '+1 2 +1 3 2'
 #t = '+1'
-t = '+1 2'
+#t = '+1 2'
 
 tokenizer = tokenize.generate_tokens(iter([t]).next)
 
