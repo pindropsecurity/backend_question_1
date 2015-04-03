@@ -1,6 +1,4 @@
-import tokenize, token
-
-print 'Hello World'
+import tokenize 
 
 class tree:
     def __init__(self, inStr):
@@ -15,7 +13,6 @@ class tree:
                 print 'THE END'
             else:
                 print 'THIS IS A SPLAT'
-        print
 
 t = tree('[+ [1 2]]')
 print 'Bye-bye World'
