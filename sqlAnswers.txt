@@ -1,15 +1,14 @@
 
-
-select name salary age 
-   from employees  emp
-   inner join employee_projects empProj
-       on emp.id = empProj.employee_id
-   inner join projects
-       on empProj.project_id = projects.project_id
-       SUM(emp.salary)
-       AVEG(emp.age)
-   group by projects.project_name
-   ordered by projects.project_name
+select t.project_name, SUM(t.salary), AVG(t.age)
+from (
+    select e.name, e.salary, e.age
+        from employee e
+    inner join employee_project ep
+        on e.id = ep.employee_id
+    inner join projects p
+        on ep.projects = p.project_id
+) t
+group by t.project_name
 
 We are joining on on project_id and the three tables hence I would make sure
 that it is indexed. However, I suspect the number of rows on the projects is
