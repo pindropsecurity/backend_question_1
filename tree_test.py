@@ -52,4 +52,8 @@ class TestTreeFunction(unittest.TestCase):
         with self.assertRaises(EOFError):
             tree.tree('+ 1 *')
 
+    def test_BadFirstLeaf(self):
+        with self.assertRaises(EOFError):
+            tree.tree('+ * 1')
+
 unittest.main()
