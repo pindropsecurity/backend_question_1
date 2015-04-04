@@ -1,5 +1,5 @@
 import unittest
-from tree import Tree
+from modules.tree import Tree
 
 
 class TestTree(unittest.TestCase):
@@ -9,4 +9,8 @@ class TestTree(unittest.TestCase):
     def test_add_child(self):
         self.tree.set_val('+')
         self.assertEqual(self.tree.get_val(), '+')
+        
+        self.tree.add_child('4')
+        self.tree.add_child('5')
+        self.assertEqual(self.tree.get_nth_child(0).get_val(), '4')
 
