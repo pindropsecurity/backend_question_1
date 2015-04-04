@@ -39,10 +39,10 @@ def reduce(tokenizer):
                 return accum
 
     elif toktyp == tokenize.NUMBER:
-        # print "Habemus NUMBER " + tokval
+        print "Habemus NUMBER " + tokval
         return int(tokval)
     elif toktyp == tokenize.ENDMARKER:
-        # print "Habemus ENDMARKER "
+        print "Habemus ENDMARKER "
         raise EOFError
     else:
         print "Habemus splat"
@@ -53,9 +53,3 @@ def tree (t):
     result = reduce(tokenizer)
     tokenizer.close()
     return result
-
-#treeCalc('+1 2 +1 3 2')
-#treeCalc('+1')
-#tree('+1 2')
-#tree('+1 2 -1 3 2')
-
