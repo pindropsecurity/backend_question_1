@@ -24,14 +24,23 @@ def reduce(tokenizer):
         #
         # Enforce the fact that every node has at least 2 children
         #
+        print 'OP ' + tokval
         accum = reduce(tokenizer)  
-        accum = operate(tokval, accum, reduce(tokenizer))
+        print 'accum1 ' + str(accum)
+
+        try:
+            accum = operate(tokval, accum, reduce(tokenizer))
+        except StopIteration:
+            pass
+
+        print 'accum2 ' + str(accum)
  
         #
         # Manage the case for > 2
         #
         while True:
             try:
+                print 'accum3 ' + str(accum)
                 accum = operate(tokval, accum, reduce(tokenizer))
             except StopIteration:
                 return accum
@@ -42,7 +51,7 @@ def reduce(tokenizer):
         print "Habemus NUMBER " + tokval
         return int(tokval)
     elif toktyp == tokenize.ENDMARKER:
-        print "Habemus ENDMARKER "
+        # print "Habemus ENDMARKER "
         raise EOFError
     else:
         print "Habemus splat"
@@ -53,3 +62,5 @@ def tree (t):
     result = reduce(tokenizer)
     tokenizer.close()
     return result
+
+tree('+ + 1 2 + 3 4')
