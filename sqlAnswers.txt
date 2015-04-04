@@ -1,0 +1,17 @@
+
+
+select name salary age 
+   from employees  emp
+   inner join employee_projects empProj
+       on emp.id = empProj.employee_id
+   inner join projects
+       on empProj.project_id = projects.project_id
+       SUM(emp.salary)
+       AVEG(emp.age)
+   group by projects.project_name
+   ordered by projects.project_name
+
+We are joining on on project_id and the three tables hence I would make sure
+that it is indexed. However, I suspect the number of rows on the projects is
+not huge, so it would not matter too much. Indexing on employee_id in the
+employees table would probably be the best choice.
