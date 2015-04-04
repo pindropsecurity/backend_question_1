@@ -31,7 +31,8 @@ def reduce(tokenizer):
         try:
             accum = operate(tokval, accum, reduce(tokenizer))
         except StopIteration:
-            pass
+            print 'Node must be >= 2'
+            raise StopIteration
 
         print 'accum2 ' + str(accum)
  
@@ -51,7 +52,7 @@ def reduce(tokenizer):
         print "Habemus NUMBER " + tokval
         return int(tokval)
     elif toktyp == tokenize.ENDMARKER:
-        # print "Habemus ENDMARKER "
+        print "Habemus ENDMARKER "
         raise EOFError
     else:
         print "Habemus splat"
@@ -63,4 +64,6 @@ def tree (t):
     tokenizer.close()
     return result
 
-tree('+ + 1 2 + 3 4')
+#tree('+ + 1 2 + 3 4')
+tree('+ + + 1 2 3')
+#tree('+ + 1 2 + 3 4')
