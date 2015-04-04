@@ -28,31 +28,34 @@ def reduce(tokenizer, depth):
 
     if toktyp == tokenize.OP and any(s in tokval for s in operators):
 
-        print 'OP ' + tokval + ' ' +str(depth)
+        #print 'OP ' + tokval + ' ' +str(depth)
         accum = reduce(tokenizer, depth+1)  
         childcount += 1
-        print 'accum1 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
+        #print 'accum1 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
 
+        #
+        # Enforce node arity is >= 2
+        #
         try:
             accum = operate(tokval, accum, reduce(tokenizer, depth+1))
             childcount += 1
-            print 'accum1.5 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
+            #print 'accum1.5 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
         except StopIteration:
-            print 'StopIteration depth ' + str(depth)
+            #print 'StopIteration depth ' + str(depth)
             if childcount > 1:
                 return accum
             else:
-                print 'Node must be >= 2'
+                #print 'Node must be >= 2'
                 raise StopIteration
 
-        print 'accum2 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
+        #print 'accum2 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
  
         #
         # Manage the case for > 2
         #
         while True:
             try:
-                print 'accum3 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
+                #print 'accum3 ' + str(accum) + ' depth ' + str(depth) + ' childcount ' + str(childcount)
                 accum = operate(tokval, accum, reduce(tokenizer, depth+1))
                 childcount += 1
             except StopIteration:
@@ -64,10 +67,10 @@ def reduce(tokenizer, depth):
                 return accum
 
     elif toktyp == tokenize.NUMBER:
-        print "Habemus NUMBER " + tokval + ' depth ' + str(depth)
+        #print "Habemus NUMBER " + tokval + ' depth ' + str(depth)
         return int(tokval)
     elif toktyp == tokenize.ENDMARKER:
-        print "Habemus ENDMARKER " + ' depth ' + str(depth)
+        #print "Habemus ENDMARKER " + ' depth ' + str(depth)
         raise EOFError
     else:
         print "Habemus splat"
