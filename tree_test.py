@@ -48,4 +48,8 @@ class TestTreeFunction(unittest.TestCase):
         with self.assertRaises(StopIteration):
             tree.tree('+ + 1 2 3 + 1 2')
 
+    def test_BadLeaf(self):
+        with self.assertRaises(EOFError):
+            tree.tree('+ 1 *')
+
 unittest.main()
