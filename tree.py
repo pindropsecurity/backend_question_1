@@ -1,7 +1,13 @@
 import tokenize 
 
+#
+# Set of valid operators
+#
 operators = ['+', '-', '*', '/']
 
+#
+# operate - apply binary operator to val1 and val2
+#
 def operate(op, val1, val2):
     if (op == '+'):
         return val1 + val2
