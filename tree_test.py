@@ -33,8 +33,19 @@ class TestTreeFunction(unittest.TestCase):
     def test_PlusHeight2(self):
         self.assertEqual(tree.tree('+ 2 4 + 1 2'), 9, 'incorrect addition of + 2 4 + 1 2')
 
-    def test_PlusHeight2Bal(self):
-        self.assertEqual(tree.tree('+ + 1 2 + 3 4'), 10, 'incorrect addition of + + 1 2 + 3 4')
+    def test_PlusHeight3BalPlusMin(self):
+        self.assertEqual(tree.tree('+ 3 + 2 - 3 4'), 4, 'incorrect addition of + + 1 2 + 3 4')
 
+    def test_PlusHeight3LeftBad(self):
+        with self.assertRaises(StopIteration):
+            tree.tree('+ + + 1 2 3')
+
+    def test_PlusHeight2LeftBad(self):
+        with self.assertRaises(StopIteration):
+            tree.tree('+ + 1 2')
+
+    def test_PlusHeight2Bal(self):
+        with self.assertRaises(StopIteration):
+            tree.tree('+ + 1 2 3 + 1 2')
 
 unittest.main()
