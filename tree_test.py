@@ -2,6 +2,10 @@ import unittest
 import tree
 
 class TestTreeFunction(unittest.TestCase):
+
+    #
+    # Set of test to test all operations.
+    #
     def test_basicPlus(self):
         self.assertEqual(tree.tree('+ 1 2'), 3, 'incorrect addition of + 1 2')
 
@@ -18,6 +22,9 @@ class TestTreeFunction(unittest.TestCase):
         with self.assertRaises(AssertionError):
             tree.operate('%', 4, 2)
 
+    #
+    # Test wide trees
+    #
     def test_PlusmoreThan2(self):
         self.assertEqual(tree.tree('+ 1 2 3 4'), 10, 'incorrect addition of + 1 2 3 4')
 
@@ -30,12 +37,18 @@ class TestTreeFunction(unittest.TestCase):
     def test_DivmoreThan2(self):
         self.assertEqual(tree.tree('/ 1000 10 10'), 10, 'incorrect addition of + 1000 10 10')
 
+    #
+    # Test taller trees
+    #
     def test_PlusHeight2(self):
         self.assertEqual(tree.tree('+ 2 4 + 1 2'), 9, 'incorrect addition of + 2 4 + 1 2')
 
     def test_PlusHeight3BalPlusMin(self):
         self.assertEqual(tree.tree('+ 3 + 2 - 3 4'), 4, 'incorrect addition of + + 1 2 + 3 4')
 
+    #
+    # Test some bad trees
+    #
     def test_PlusHeight3LeftBad(self):
         with self.assertRaises(StopIteration):
             tree.tree('+ + + 1 2 3')
