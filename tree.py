@@ -69,6 +69,4 @@ def tree (t):
     tokenizer.close()
     return result
 
-#tree('+ + 1 2 + 3 4')
-tree('+ + 1 2 + 3 4')
-tree('+ + + 1 2 3')
+#tree('+ + + 1 2 3')
