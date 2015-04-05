@@ -7,7 +7,7 @@ def build_tree(math_exp_string):
     stack = Stack()
     current_node = Tree()
 
-    # expecting the math exp would use parenthesis for higher order operator
+    # expecting the math exp would use parenthesis for higher order operator i.e. */
     if not math_exp_string.startswith('(') and not math_exp_string.endswith(')'):
         math_exp_string = '(' + math_exp_string + ')'
 
@@ -71,7 +71,6 @@ def evaluate(node):
             return operation_map[node.get_val()](result, child_val)
         return result
     else:
-        print node.get_val()
         return node.get_val()
 
 
