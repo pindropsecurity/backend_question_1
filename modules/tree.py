@@ -8,6 +8,10 @@ class Tree(object):
         child = Tree(val)
         self.children.append(child)
 
+    
+    def update_child(self, node, index=0):
+        self.children.insert(index, node) 
+
 
     def set_val(self, val):
         self.val = val
@@ -21,4 +25,6 @@ class Tree(object):
         if self.children:
             return self.children[len(self.children) - 1]
 
-
+    def get_children(self):
+        return self.children
+    

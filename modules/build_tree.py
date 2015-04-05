@@ -1,5 +1,7 @@
+from operator import add, sub, mul, div
 from stack import Stack
 from tree import Tree
+
 
 def build_tree(math_exp_string):
     stack = Stack()
@@ -20,7 +22,7 @@ def build_tree(math_exp_string):
 
         elif token == ')':
             if stack.size():
-                stack.pop()
+                current_node = stack.pop()
 
         elif token in ('+', '-', '*', '/'):
             if current_node.get_val():
@@ -30,7 +32,7 @@ def build_tree(math_exp_string):
                     current_node = current_node.get_newborn_child()
                 else:
                     parent = Tree(token)
-                    parent.add_child(current_node)
+                    parent.update_child(current_node)
                     parent.add_child()
                     stack.push(parent)
                     current_node = parent.get_newborn_child()
@@ -41,15 +43,46 @@ def build_tree(math_exp_string):
                 current_node = current_node.get_newborn_child()
 
         else:
-            current_node.set_val(token)
+            try:
+                current_node.set_val(int(token))
+            except ValueError, e:
+                print 'Cannot convert into int:', e.message, ' setting 0 instead'
+                current_node.set_val(0)
             current_node = stack.pop()
 
     return current_node
 
+operation_map = {
+    '+': add,
+    '-': sub,
+    '*': mul,
+    '/': div
+}
+
+
+def evaluate(node):
+    children = node.get_children()
+    if children:
+        first_child_val = evaluate(children[0])
+        second_child_val = evaluate(children[1])
+        result = operation_map[node.get_val()](first_child_val, second_child_val)
+        for child in children[2:]:
+            child_val = evaluate(child)
+            return operation_map[node.get_val()](result, child_val)
+        return result
+    else:
+        print node.get_val()
+        return node.get_val()
+
 
 if __name__ == '__main__':
-    input_string = '1 - 2 - 3'
-    root_node = build_tree(input_string)
-    print root_node.get_val()
-    print root_node.get_newborn_child().get_val()
-
+    input_string_list = [
+        '1 - 2 - 3',         
+        '1 - 2 - 3 + (4 * 5) - 2',
+        '(2 * 5) - (2 / 2) + 3'
+    ]
+    
+    for input_string in input_string_list:
+        root_node = build_tree(input_string)
+        print 'root val ', root_node.get_val()
+        print '%s = %d' % (input_string, evaluate(root_node))
