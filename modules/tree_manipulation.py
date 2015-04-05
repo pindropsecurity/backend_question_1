@@ -2,12 +2,27 @@ from operator import add, sub, mul, div
 from stack import Stack
 from tree import Tree
 
+operator_map = {
+    '+': add,
+    '-': sub,
+    '*': mul,
+    '/': div
+}
+
 
 def build_tree(math_exp_string):
+    """
+    This method is used to build a tree from given input mathematical expression.
+    
+    Following consideration has been taken
+    1. higher order operations are given with complete parenthesis ex. 1 - (2*3)
+    2. add left and right parenthesis if not given ex. (1 - (2 * 3))
+    3. for divide by zero raise a nice error message
+
+    """
     stack = Stack()
     current_node = Tree()
 
-    # expecting the math exp would use parenthesis for higher order operator i.e. */
     if not math_exp_string.startswith('(') and not math_exp_string.endswith(')'):
         math_exp_string = '(' + math_exp_string + ')'
 
@@ -24,7 +39,7 @@ def build_tree(math_exp_string):
             if stack.size():
                 current_node = stack.pop()
 
-        elif token in ('+', '-', '*', '/'):
+        elif token in operator_map.keys():
             if current_node.get_val():
                 if current_node.get_val() == token:
                     current_node.add_child()
@@ -46,29 +61,40 @@ def build_tree(math_exp_string):
             try:
                 current_node.set_val(int(token))
             except ValueError, e:
-                print 'Cannot convert into int:', e.message, ' setting 0 instead'
-                current_node.set_val(0)
+                current_node.set_val(token)
             current_node = stack.pop()
 
     return current_node
 
-operation_map = {
-    '+': add,
-    '-': sub,
-    '*': mul,
-    '/': div
-}
+
+def do_math_operation(op, left_value, right_value):
+    try:
+        return op(left_value, right_value)
+    except (TypeError, ValueError) as err:
+        print err.message
+        return 0
+    except ZeroDivisionError, err:
+        print err.message
 
 
 def evaluate(node):
+    """
+    tree traversal method to evaluate the expression
+    """
+
     children = node.get_children()
     if children:
-        first_child_val = evaluate(children[0])
-        second_child_val = evaluate(children[1])
-        result = operation_map[node.get_val()](first_child_val, second_child_val)
+        result = do_math_operation(
+            operator_map[node.get_val()], 
+            evaluate(children[0]), 
+            evaluate(children[1])
+        )
         for child in children[2:]:
-            child_val = evaluate(child)
-            return operation_map[node.get_val()](result, child_val)
+            return do_math_operation(
+                operator_map[node.get_val()], 
+                result, 
+                evaluate(child)
+            )
         return result
     else:
         return node.get_val()

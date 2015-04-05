@@ -7,7 +7,7 @@ class TestBuildTree(unittest.TestCase):
         self.input_string_list = [
             ('1 - 2 - 3', -4),         
             ('1 - 2 - 3 + (4 * 5) - 2', 14),
-            ('(2 * 5) - (2 / 2) + 3', 12)
+            ('(2 * 5) - (2 / 2) + 3', 12),
         ]
 
 
@@ -26,3 +26,7 @@ class TestBuildTree(unittest.TestCase):
             self.assertEqual(evaluate(root_node), expected_result)
 
 
+    def test_evaluate_divide_by_zero(self):
+        input_string = '2 / 0'
+        root_node = build_tree(input_string)
+        self.assertIsNone(evaluate(root_node))
