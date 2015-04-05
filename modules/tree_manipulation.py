@@ -9,26 +9,49 @@ operator_map = {
     '/': div
 }
 
+opening_parenthesis = ('(', )
+closing_parenthesis = (')', )
+parenthesis_map = dict(zip(opening_parenthesis, closing_parenthesis))
+
+def filter_spaces(exp):
+    return ''.join([item for item in exp if item.strip()])
+
+def validate_math_exp(exp):
+    """
+    this method will check if all opening parenthesis has a corresponding closing parenthesis 
+    """
+    stack = Stack()
+
+    for token in exp:
+        if token in opening_parenthesis:
+            stack.push(token)
+        elif token in closing_parenthesis and parenthesis_map[stack.top()] == token:
+            stack.pop()
+
+    return stack.size() == 0
+
 
 def build_tree(math_exp_string):
     """
-    This method is used to build a tree from given input mathematical expression.
-    
+    This method is used to build a tree from given input mathematical expression.   
     Following consideration has been taken
     1. higher order operations are given with complete parenthesis ex. 1 - (2*3)
     2. add left and right parenthesis if not given ex. (1 - (2 * 3))
     3. for divide by zero raise a nice error message
 
     """
+    math_exp_string = filter_spaces(math_exp_string)
+
+    if not validate_math_exp(math_exp_string):
+        print 'Validation Error, one or more parenthesis are not closed properly'
+        return
+
     stack = Stack()
     current_node = Tree()
 
-    if not math_exp_string.startswith('(') and not math_exp_string.endswith(')'):
-        math_exp_string = '(' + math_exp_string + ')'
+    math_exp_string = '(' + math_exp_string + ')'
 
     for token in math_exp_string:
-        if not token.strip():
-            continue
 
         if token == '(':
             current_node.add_child()
@@ -59,7 +82,7 @@ def build_tree(math_exp_string):
 
         else:
             try:
-                current_node.set_val(int(token))
+                current_node.set_val(float(token))
             except ValueError, e:
                 current_node.set_val(token)
             current_node = stack.pop()
@@ -70,11 +93,9 @@ def build_tree(math_exp_string):
 def do_math_operation(op, left_value, right_value):
     try:
         return op(left_value, right_value)
-    except (TypeError, ValueError) as err:
+    except (TypeError, ValueError, ZeroDivisionError) as err:
         print err.message
         return 0
-    except ZeroDivisionError, err:
-        print err.message
 
 
 def evaluate(node):
@@ -102,6 +123,7 @@ def evaluate(node):
 
 if __name__ == '__main__':
     input_string_list = [
+        'A + (B * C)',
         '1 - 2 - 3',         
         '1 - 2 - 3 + (4 * 5) - 2',
         '(2 * 5) - (2 / 2) + 3'
@@ -109,5 +131,4 @@ if __name__ == '__main__':
     
     for input_string in input_string_list:
         root_node = build_tree(input_string)
-        print 'root val ', root_node.get_val()
-        print '%s = %d' % (input_string, evaluate(root_node))
+        print 'Evaluate (%s) = %0.2f' % (input_string, evaluate(root_node))

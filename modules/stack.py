@@ -17,3 +17,6 @@ class Stack(object):
 
     def is_empty(self):
         return self.size() == 0
+
+    def top(self):
+        return self.items[self.size() - 1]
