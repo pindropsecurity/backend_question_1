@@ -36,8 +36,8 @@ class Tree(object):
     Acts as a 'container' for Node objects, to be organized in a tree structure with a single base node.
     """
     def __init__(self, root):
-        if type(root) != Node:
-            raise TypeError('root must be of type Node')
+        if not isinstance(root, Node):
+            raise TypeError('root must be of a Node or subclass of Node')
         self.root = root
         self.reset()
     
@@ -50,7 +50,7 @@ class Tree(object):
     
     def move_up(self):
         """Move to the parent node if it exists"""
-        if type(self.current.parent) != Node:
+        if not isinstance(self.current.parent, Node):
             raise ParentDoesNotExist('Parent node does not exist')
         self.move_to(self.current.parent)
     
