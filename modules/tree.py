@@ -4,7 +4,7 @@ class Tree(object):
         self.children = []
 
 
-    def add_child(self, val):
+    def add_child(self, val=None):
         child = Tree(val)
         self.children.append(child)
 
@@ -17,6 +17,8 @@ class Tree(object):
         return self.val
 
 
-    def get_nth_child(self, index):
-        return self.children[index]
+    def get_newborn_child(self):
+        if self.children:
+            return self.children[len(self.children) - 1]
+
 
