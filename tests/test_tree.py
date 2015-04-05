@@ -12,5 +12,5 @@ class TestTree(unittest.TestCase):
         
         self.tree.add_child('4')
         self.tree.add_child('5')
-        self.assertEqual(self.tree.get_nth_child(0).get_val(), '4')
+        self.assertEqual(self.tree.get_newborn_child().get_val(), '5')
 

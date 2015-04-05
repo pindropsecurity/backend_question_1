@@ -1,5 +1,5 @@
 import unittest
-from modules.build_tree import build_tree, evaluate
+from modules.tree_manipulation import build_tree, evaluate
 from modules.tree import Tree
 
 class TestBuildTree(unittest.TestCase):
