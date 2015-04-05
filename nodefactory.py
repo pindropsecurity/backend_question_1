@@ -6,6 +6,10 @@ class SiblingDoesNotExist(Exception):
     pass
 
 
+class InvalidMathNode(Exception):
+    pass
+
+
 class Node(list):
     """
     A Node is a nothing more than a list that tracks a little extra information about where it exists
@@ -74,3 +78,26 @@ class Tree(object):
     
     def handle_sibling_error(self, depth, position):
         raise SiblingDoesNotExist('Node does not exist at depth: %d, position: %d' % (depth, position))
+
+
+class MathNode(Node):
+    """
+    Node with rules limiting what values it may represent
+    """
+    nodetype = 'operator'
+    def __init__(self, value, *args, **kwargs):
+        valid_operators = ['-', '+', '/', '*']
+        is_valid = False
+        if value in valid_operators:
+            is_valid = True
+        else:
+            try:
+                if value.real == value:
+                    self.nodetype = 'number'
+                    is_valid = True
+            except AttributeError:
+                is_valid = False
+        if not is_valid:
+            raise InvalidMathNode('value must be math expression or real number')
+        
+        super(list, self).__init__(value, *args, **kwargs)
