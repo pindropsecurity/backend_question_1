@@ -1,6 +1,7 @@
 import unittest
 from modules.tree_manipulation import build_tree, evaluate
 from modules.tree import Tree
+from modules.custom_exceptions import InvalidInput, EvaluationError
 
 class TestBuildTree(unittest.TestCase):
     def setUp(self):
@@ -22,8 +23,8 @@ class TestBuildTree(unittest.TestCase):
     def test_invalid_exp(self):
         input_string_list = ('1 + (3*5', '(2 * 3 - 1')
         for input_string in input_string_list:
-            self.assertIsNone(build_tree(input_string))
-
+            with self.assertRaises(InvalidInput):
+                build_tree(input_string)
 
     def test_evaluate(self):
         for input_string_tup in self.input_string_list:
@@ -36,15 +37,16 @@ class TestBuildTree(unittest.TestCase):
         """
         In case of divide by zero it should return None for that operator node
         """
-        input_string_list = (('2 / 0', 0), ('1 + (2 / 0)', 1.00))
-        for input_tuple in input_string_list:
-            input_string, expected_result = input_tuple
+        input_string_list = ('2 / 0', '1 + (2 / 0)')
+        for input_string in input_string_list:
             root_node = build_tree(input_string)
-            self.assertEqual(evaluate(root_node), expected_result)
+            with self.assertRaises(EvaluationError):
+                evaluate(root_node)
 
 
     def test_evaluate_non_digit_token(self):
         input_string = 'A + (B * C)'
         root_node = build_tree(input_string)
-        self.assertEqual(evaluate(root_node), 0)
+        with self.assertRaises(EvaluationError):
+            evaluate(root_node)
 

@@ -1,6 +1,8 @@
+import logging
 from operator import add, sub, mul, div
 from stack import Stack
 from tree import Tree
+from custom_exceptions import TreeManipulationError, InvalidInput, EvaluationError
 
 operator_map = {
     '+': add,
@@ -68,8 +70,7 @@ def build_tree(math_exp_string):
 
     """
     if not validate_math_exp(math_exp_string):
-        print 'Validation Error, one or more parenthesis are not closed properly'
-        return
+        raise InvalidInput('Validation Error, one or more parenthesis are not closed properly')
     
     exp_list = filter_exp_list(math_exp_string)
     stack = Stack()
@@ -108,6 +109,7 @@ def build_tree(math_exp_string):
             try:
                 current_node.set_val(float(token))
             except ValueError, e:
+                logging.info(e.message)
                 current_node.set_val(token)
             current_node = stack.pop()
 
@@ -117,9 +119,8 @@ def build_tree(math_exp_string):
 def do_math_operation(op, left_value, right_value):
     try:
         return op(left_value, right_value)
-    except (TypeError, ValueError, ZeroDivisionError) as err:
-        print err.message
-        return 0
+    except (TypeError, ValueError, ZeroDivisionError, FloatingPointError) as err:
+        raise EvaluationError(err)
 
 
 def evaluate(node):
@@ -154,5 +155,8 @@ if __name__ == '__main__':
     ]
 
     for input_string in input_string_list:
-        root_node = build_tree(input_string)
-        print 'Evaluate (%s) = %0.2f' % (input_string, evaluate(root_node))
+        try:
+            root_node = build_tree(input_string)
+            print 'Evaluate (%s) = %0.2f' % (input_string, evaluate(root_node))
+        except TreeManipulationError, e:
+            print e.message
