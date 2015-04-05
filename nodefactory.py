@@ -13,16 +13,18 @@ class Node(list):
     """
     position = 0
     depth = 0
-    def __init__(self, leaves=[], parent=None, *args, **kwargs):
-        self.leaves = leaves
+    def __init__(self, value, children=[], parent=None, *args, **kwargs):
+        self.value = value
+        for child in self.children:
+            self.add_child(child)
         self.parent = parent
         super(list, self).__init__(*args, **kwargs)
     
-    def add_leaf(self, node):
+    def add_child(self, node):
         node.parent = self
-        node.position = len(self.leaves)
+        node.position = len(self)
         node.depth = self.depth + 1
-        self.leaves.append(node)
+        self.append(node)
 
 
 class Tree(object):
