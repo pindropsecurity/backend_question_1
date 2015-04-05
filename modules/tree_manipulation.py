@@ -13,12 +13,39 @@ opening_parenthesis = ('(', )
 closing_parenthesis = (')', )
 parenthesis_map = dict(zip(opening_parenthesis, closing_parenthesis))
 
-def filter_spaces(exp):
-    return ''.join([item for item in exp if item.strip()])
+def filter_exp_list(exp):
+    """
+    filter expression string and return a list with all operands, operators and parenthesis
+    """
+    exp_list = []
+    operand = []
+
+    for token in exp:
+        if not token.strip():
+            continue
+        elif token == '(':
+            exp_list.append(token)
+        elif token in ('+', '-', '*', '/', ')'):
+            if operand:
+                exp_list.append(''.join(operand))
+            exp_list.append(token)
+            operand = []
+        else:
+            operand.append(token)
+    
+    if operand:
+        exp_list.append(''.join(operand))
+
+    # add a outer closed parenthesis
+    exp_list.insert(0, '(')
+    exp_list.append(')')
+
+    return exp_list
+
 
 def validate_math_exp(exp):
     """
-    this method will check if all opening parenthesis has a corresponding closing parenthesis 
+    this method will check if all opening parenthesis has a corresponding closing parenthesis
     """
     stack = Stack()
 
@@ -33,25 +60,22 @@ def validate_math_exp(exp):
 
 def build_tree(math_exp_string):
     """
-    This method is used to build a tree from given input mathematical expression.   
+    This method is used to build a tree from given input mathematical expression.
     Following consideration has been taken
     1. higher order operations are given with complete parenthesis ex. 1 - (2*3)
     2. add left and right parenthesis if not given ex. (1 - (2 * 3))
-    3. for divide by zero raise a nice error message
+    3. print error message for any exception
 
     """
-    math_exp_string = filter_spaces(math_exp_string)
-
     if not validate_math_exp(math_exp_string):
         print 'Validation Error, one or more parenthesis are not closed properly'
         return
-
+    
+    exp_list = filter_exp_list(math_exp_string)
     stack = Stack()
     current_node = Tree()
 
-    math_exp_string = '(' + math_exp_string + ')'
-
-    for token in math_exp_string:
+    for token in exp_list:
 
         if token == '(':
             current_node.add_child()
@@ -106,14 +130,14 @@ def evaluate(node):
     children = node.get_children()
     if children:
         result = do_math_operation(
-            operator_map[node.get_val()], 
-            evaluate(children[0]), 
+            operator_map[node.get_val()],
+            evaluate(children[0]),
             evaluate(children[1])
         )
         for child in children[2:]:
             return do_math_operation(
-                operator_map[node.get_val()], 
-                result, 
+                operator_map[node.get_val()],
+                result,
                 evaluate(child)
             )
         return result
@@ -123,12 +147,12 @@ def evaluate(node):
 
 if __name__ == '__main__':
     input_string_list = [
-        'A + (B * C)',
-        '1 - 2 - 3',         
-        '1 - 2 - 3 + (4 * 5) - 2',
-        '(2 * 5) - (2 / 2) + 3'
+        'A + (  B * C )  ',
+        '1 - 2.0 - 3',
+        '1 - 2.5 - 3 + (4 * 5) - 2',
+        '(2 * 5.5) - (2.0 / 2) + 3'
     ]
-    
+
     for input_string in input_string_list:
         root_node = build_tree(input_string)
         print 'Evaluate (%s) = %0.2f' % (input_string, evaluate(root_node))
