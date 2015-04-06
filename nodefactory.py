@@ -19,10 +19,10 @@ class Node(list):
     depth = 0
     def __init__(self, value, children=[], parent=None, *args, **kwargs):
         self.value = value
-        for child in self.children:
+        for child in self:
             self.add_child(child)
         self.parent = parent
-        super(list, self).__init__(*args, **kwargs)
+        super(Node, self).__init__(*args, **kwargs)
     
     def add_child(self, node):
         node.parent = self
@@ -100,4 +100,59 @@ class MathNode(Node):
         if not is_valid:
             raise InvalidMathNode('value must be math expression or real number')
         
-        super(list, self).__init__(value, *args, **kwargs)
+        super(MathNode, self).__init__(value, *args, **kwargs)
+
+
+def _get_total(math_mode, left, right):
+    if left == None:
+        print 'yes!'
+        return right
+    total = left
+    if math_mode == '-':
+        total -= right
+    elif math_mode == '+':
+        total += right
+    elif math_mode == '/':
+        total /= right
+    elif math_mode == '*':
+        total *= right
+    print total
+    return total
+
+
+def math_tree_calculator(node, total=None, math_mode=None):
+    print total
+    if node.nodetype == 'operator':
+        for child in node:
+            print child.nodetype
+            if child.nodetype == 'number':
+                total = _get_total(node.value, total, child.value)
+            else:
+                print total, '-'
+                total = _get_total(node.value, total, math_tree_calculator(child))
+                print total, '--'
+    else:
+        total = _get_total(math_mode, total, node.value)
+    return total
+
+
+def node_pretty_print(node, indent=0):
+    rjust_indent = indent
+    if indent:
+        rjust_indent = indent * 3
+    print '{}'.format(node.value).rjust(rjust_indent, ' ')
+    for child in node:
+        node_pretty_print(child, indent + 1)
+
+
+def dict_to_math_node(d):
+    node = MathNode(d['value'])
+    if 'children' in d:
+        for child in d['children']:
+            child_node = dict_to_math_node(child)
+            node.add_child(child_node)
+    return node
+
+
+def list_to_math_tree(l):
+    return dict_to_math_node(l[0])
