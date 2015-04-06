@@ -105,7 +105,6 @@ class MathNode(Node):
 
 def _get_total(math_mode, left, right):
     if left == None:
-        print 'yes!'
         return right
     total = left
     if math_mode == '-':
@@ -116,21 +115,17 @@ def _get_total(math_mode, left, right):
         total /= right
     elif math_mode == '*':
         total *= right
-    print total
     return total
 
 
 def math_tree_calculator(node, total=None, math_mode=None):
-    print total
     if node.nodetype == 'operator':
         for child in node:
             print child.nodetype
             if child.nodetype == 'number':
                 total = _get_total(node.value, total, child.value)
             else:
-                print total, '-'
                 total = _get_total(node.value, total, math_tree_calculator(child))
-                print total, '--'
     else:
         total = _get_total(math_mode, total, node.value)
     return total
