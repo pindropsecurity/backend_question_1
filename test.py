@@ -228,7 +228,7 @@ def test_6():
 
 
 def do_optional_test():
-    do_test = raw_input('Generate random node and calculate? (y/n) ')
+    do_test = raw_input('Generate random tree and calculate? (y/n) ')
     if do_test == 'y':
         random_node = create_random_mathnodetree()
         node_pretty_print(random_node)
