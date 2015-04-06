@@ -47,6 +47,9 @@ class OperatorNode(Node):
         else:
             super(OperatorNode, self).__init__(val)
 
+    def calculate(self):
+        return 0
+
 
 class NumberNode(Node):
     """
