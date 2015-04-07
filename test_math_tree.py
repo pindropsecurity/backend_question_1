@@ -27,7 +27,7 @@ class TreeGraph(unittest.TestCase):
     def test_create_number_node_exception(self):
         self.assertRaises(InvalidNumber, NumberNode, "a")
 
-    def test_create_tree(self):
+    def test_calculate_tree1(self):
         """
                 +
               /  \
@@ -57,8 +57,132 @@ class TreeGraph(unittest.TestCase):
         c_node.add_child(e_node)
         c_node.add_child(f_node)
 
-        self.assertEquals(root_node.calculate(), 12)
+        self.assertEquals(float(root_node.calculate()), float(12))
 
+    def test_calculate_tree2(self):
+        """
+                +
+              /  \
+             3   -       3 + 10 = 13
+               /  \
+              +    5     15 - 5 = 10
+            /  \
+           -  10         5 + 10 = 15
+         /  \
+        9    +           9 - 4 = 5
+           /  \
+         -     6         -2 + 6 = 4
+        / \
+       2  4              2 - 4 = -2
+
+        """
+        root_node = OperatorNode("+")
+        a = NumberNode(3)
+        b = OperatorNode("-")
+        c = OperatorNode("+")
+        d = NumberNode(5)
+        e = OperatorNode("-")
+        f = NumberNode(10)
+        g = NumberNode(9)
+        h = OperatorNode("+")
+        i = OperatorNode("-")
+        j = NumberNode(6)
+        k = NumberNode(2)
+        l = NumberNode(4)
+
+        root_node.add_child(a)
+        root_node.add_child(b)
+
+        b.add_child(c)
+        b.add_child(d)
+
+        c.add_child(e)
+        c.add_child(f)
+
+        e.add_child(g)
+        e.add_child(h)
+
+        h.add_child(i)
+        h.add_child(j)
+
+        i.add_child(k)
+        i.add_child(l)
+
+        self.assertEquals(float(root_node.calculate()), float(13))
+
+    def test_calculate_tree3(self):
+        """
+                -
+              /  \
+             3   *       3 - 150 = -147
+               /  \
+              *    5     30 * 5 = 150
+            /  \
+         (div)  10       3 * 10 = 30
+         /  \
+        9    3           9 / 3 = 3
+
+        """
+        root_node = OperatorNode("-")
+        a = NumberNode(3)
+        b = OperatorNode("*")
+        c = OperatorNode("*")
+        d = NumberNode(5)
+        e = OperatorNode("/")
+        f = NumberNode(10)
+        g = NumberNode(9)
+        h = NumberNode(3)
+
+        root_node.add_child(a)
+        root_node.add_child(b)
+
+        b.add_child(c)
+        b.add_child(d)
+
+        c.add_child(e)
+        c.add_child(f)
+
+        e.add_child(g)
+        e.add_child(h)
+
+        self.assertEquals(float(root_node.calculate()), float(-147))
+
+    def test_calculate_tree4(self):
+        """
+              (div)
+              /  \
+             3   *       3 / 150 = -147
+               /  \
+              *    5     30 * 5 = 150
+            /  \
+         (div)  10       3 * 10 = 30
+         /  \
+        9    3           9 / 3 = 3
+
+        """
+        root_node = OperatorNode("/")
+        a = NumberNode(3)
+        b = OperatorNode("*")
+        c = OperatorNode("*")
+        d = NumberNode(5)
+        e = OperatorNode("/")
+        f = NumberNode(10)
+        g = NumberNode(9)
+        h = NumberNode(3)
+
+        root_node.add_child(a)
+        root_node.add_child(b)
+
+        b.add_child(c)
+        b.add_child(d)
+
+        c.add_child(e)
+        c.add_child(f)
+
+        e.add_child(g)
+        e.add_child(h)
+
+        self.assertEquals(float(root_node.calculate()), 0.02)
 
 if __name__ == '__main__':
     unittest.main()
