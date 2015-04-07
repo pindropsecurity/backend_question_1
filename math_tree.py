@@ -18,6 +18,10 @@ class InvalidNumber(Exception):
     pass
 
 
+class InvalidTree(Exception):
+    """ The tree dictionary didn't have the proper structure """
+
+
 class Node(object):
     """
     Object with basic Node properties that will be extended with OperatorNode and NumberNode.
@@ -43,7 +47,7 @@ class Node(object):
 class OperatorNode(Node):
     """
     OperatorNode has a value of +, -, /, or *
-    calculate() will return the value of the tree under the node
+    calculate() will return the value of all nodes under the root node.
     """
     operators = ["+", "-", "/", "*"]
 
@@ -79,9 +83,7 @@ class OperatorNode(Node):
         Create an expression to calculate with eval()
         """
         expr = (" %s " % operator).join([str(float(n)) for n in number_nodes])
-        print expr
         result = eval(expr)
-        print result
         return NumberNode(result)
 
 
@@ -101,3 +103,36 @@ class NumberNode(Node):
     def __float__(self):
         return float(self.val)
 
+
+class Tree(OperatorNode):
+    """
+    Create a Tree object from a dictionary.
+    """
+    def __init__(self, tree_dict):
+        if len(tree_dict.keys()) > 1:
+            raise InvalidTree("Tree can only have one root node")
+
+        super(Tree, self).__init__(tree_dict.keys()[0])
+
+        for node in self.tree(tree_dict).children:
+            self.add_child(node)
+
+    def tree(self, tree):
+        def walk_tree(new_tree):
+            op_node = OperatorNode(new_tree.keys()[0])
+            for item in new_tree[new_tree.keys()[0]]:
+                if isinstance(item, dict):
+                    op_node.add_child(walk_tree(item))
+                else:
+                    op_node.add_child(NumberNode(item))
+            return op_node
+
+        root = tree.keys()[0]
+        root_node = OperatorNode(root)
+        for child in tree[root]:
+            if isinstance(child, dict):
+                root_node.add_child(walk_tree(child))
+            else:
+                root_node.add_child(NumberNode(child))
+
+        return root_node

@@ -184,5 +184,20 @@ class TreeGraph(unittest.TestCase):
 
         self.assertEquals(float(root_node.calculate()), 0.02)
 
+    def test_create_tree_from_dict(self):
+        #        +
+        #       / \
+        #      2   -                           2 + -40 = -38
+        #         /  \
+        #        4    +                     4 - 44 = -40
+        #            /  \
+        #           -     *                -1 + 45 = 44
+        #          / \   / \
+        #         7   8 9   5          7 - 8 = -1   9 * 5 = 45
+
+        tree_dict = {"+": [2, {"-": [4, {"+": [{"-": [7, 8]}, {"*": [9, 5]}]}]}]}
+        tree = Tree(tree_dict)
+        self.assertEquals(float(tree.calculate()), float(-38))
+
 if __name__ == '__main__':
     unittest.main()
