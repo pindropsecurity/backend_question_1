@@ -71,15 +71,15 @@ class OperatorNode(Node):
         if len(self.children) < 2:
             raise NoChildren("Must have at least two children NumberNodes to calculate")
 
-        def calculate_all_children(children, operator):
-            num_children = []
+        def calc_children(children, operator):
+            number_nodes = []
             for node in children:
                 if isinstance(node, OperatorNode):
-                    num_children.append(calculate_all_children(node.children, node.operator))
+                    number_nodes.append(calc_children(node.children, node.operator))
                 else:
-                    num_children.append(node)
-            return self.solve_expression(num_children, operator)
-        return calculate_all_children(self.children, self.operator)
+                    number_nodes.append(node)
+            return self.solve_expression(number_nodes, operator)
+        return calc_children(self.children, self.operator)
 
     def solve_expression(self, number_nodes, operator):
         """
