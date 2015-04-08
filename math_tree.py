@@ -20,6 +20,12 @@ class InvalidNumber(Exception):
 
 class InvalidTree(Exception):
     """ The tree dictionary didn't have the proper structure """
+    pass
+
+
+class NoChildren(Exception):
+    """ Tried to calculate node with no children """
+    pass
 
 
 class Node(object):
@@ -30,7 +36,6 @@ class Node(object):
     def __init__(self, val):
         if val == "":
             raise InvalidNode("Node cannot be empty")
-
         self.val = val
         self.children = []
 
@@ -39,9 +44,6 @@ class Node(object):
 
     def __str__(self):
         return str(self.val)
-
-    def __repr__(self):
-        return self.__str__()
 
 
 class OperatorNode(Node):
@@ -53,8 +55,7 @@ class OperatorNode(Node):
 
     def __init__(self, val):
         if val not in self.operators:
-            raise InvalidOperator("Invalid Operator. Must be one of set(+ - / *)")
-
+            raise InvalidOperator("Invalid Operator. Must be in set(+ - / *)")
         self._operator = val
         super(OperatorNode, self).__init__(val)
 
@@ -67,6 +68,9 @@ class OperatorNode(Node):
         Recursively walk through all children in OperatorNode and solve until only
         a NumberNode is left.
         """
+        if len(self.children) < 2:
+            raise NoChildren("Must have at least two children NumberNodes to calculate")
+
         def calculate_all_children(children, operator):
             num_children = []
             for node in children:
@@ -75,7 +79,6 @@ class OperatorNode(Node):
                 else:
                     num_children.append(node)
             return self.solve_expression(num_children, operator)
-
         return calculate_all_children(self.children, self.operator)
 
     def solve_expression(self, number_nodes, operator):
@@ -93,8 +96,7 @@ class NumberNode(Node):
     """
     def __init__(self, val):
         if not isinstance(val, Number):
-            raise InvalidNumber
-
+            raise InvalidNumber("Value must be a number")
         super(NumberNode, self).__init__(val)
 
     def __int__(self):
@@ -111,9 +113,7 @@ class Tree(OperatorNode):
     def __init__(self, tree_dict):
         if len(tree_dict.keys()) > 1:
             raise InvalidTree("Tree can only have one root node")
-
         super(Tree, self).__init__(tree_dict.keys()[0])
-
         for node in self.tree(tree_dict).children:
             self.add_child(node)
 

@@ -18,14 +18,23 @@ class TreeGraph(unittest.TestCase):
         self.assertEquals("+", node.val)
 
     def test_create_op_node_exception(self):
-        self.assertRaises(InvalidOperator, OperatorNode, "a")
+        self.assertRaises(InvalidOperator, OperatorNode, "A")
 
     def test_create_number_node(self):
         node = NumberNode(2)
         self.assertEquals(node.val, 2)
 
     def test_create_number_node_exception(self):
-        self.assertRaises(InvalidNumber, NumberNode, "a")
+        self.assertRaises(InvalidNumber, NumberNode, "A")
+
+    def test_calculate_node_no_children(self):
+        node = OperatorNode("+")
+        self.assertRaises(NoChildren, node.calculate)
+
+    def test_calculate_node_one_child(self):
+        node = OperatorNode("+")
+        node.add_child(NumberNode(2))
+        self.assertRaises(NoChildren, node.calculate)
 
     def test_calculate_tree1(self):
         """
@@ -47,13 +56,10 @@ class TreeGraph(unittest.TestCase):
         d_node = NumberNode(5)
         e_node = NumberNode(4)
         f_node = NumberNode(10)
-
         root_node.add_child(a_node)
         root_node.add_child(b_node)
-
         b_node.add_child(c_node)
         b_node.add_child(d_node)
-
         c_node.add_child(e_node)
         c_node.add_child(f_node)
 
@@ -92,19 +98,14 @@ class TreeGraph(unittest.TestCase):
 
         root_node.add_child(a)
         root_node.add_child(b)
-
         b.add_child(c)
         b.add_child(d)
-
         c.add_child(e)
         c.add_child(f)
-
         e.add_child(g)
         e.add_child(h)
-
         h.add_child(i)
         h.add_child(j)
-
         i.add_child(k)
         i.add_child(l)
 
@@ -135,13 +136,10 @@ class TreeGraph(unittest.TestCase):
 
         root_node.add_child(a)
         root_node.add_child(b)
-
         b.add_child(c)
         b.add_child(d)
-
         c.add_child(e)
         c.add_child(f)
-
         e.add_child(g)
         e.add_child(h)
 
@@ -172,28 +170,60 @@ class TreeGraph(unittest.TestCase):
 
         root_node.add_child(a)
         root_node.add_child(b)
-
         b.add_child(c)
         b.add_child(d)
-
         c.add_child(e)
         c.add_child(f)
-
         e.add_child(g)
         e.add_child(h)
 
         self.assertEquals(float(root_node.calculate()), 0.02)
 
+    def test_calculate_tree5(self):
+        """
+                 +
+              /  |   \
+             3   -    3
+               /  \
+              +    5
+          /  /  \
+        5   4  10
+
+           answer: 20
+
+        """
+        root_node = OperatorNode("+")
+        a_node = NumberNode(3)
+        b_node = OperatorNode("-")
+        c_node = OperatorNode("+")
+        d_node = NumberNode(5)
+        e_node = NumberNode(4)
+        f_node = NumberNode(10)
+        g_node = NumberNode(3)
+        h_node = NumberNode(5)
+        root_node.add_child(a_node)
+        root_node.add_child(b_node)
+        root_node.add_child(g_node)
+        b_node.add_child(c_node)
+        b_node.add_child(d_node)
+        c_node.add_child(e_node)
+        c_node.add_child(f_node)
+        c_node.add_child(h_node)
+
+        self.assertEquals(float(root_node.calculate()), float(20))
+
     def test_create_tree_from_dict(self):
-        #        +
-        #       / \
-        #      2   -                           2 + -40 = -38
-        #         /  \
-        #        4    +                     4 - 44 = -40
-        #            /  \
-        #           -     *                -1 + 45 = 44
-        #          / \   / \
-        #         7   8 9   5          7 - 8 = -1   9 * 5 = 45
+        """
+                +
+               / \
+              2   -
+                 /  \
+                4    +
+                    /  \
+                   -     *
+                  / \   / \
+                 7   8 9   5
+        """
 
         tree_dict = {"+": [2, {"-": [4, {"+": [{"-": [7, 8]}, {"*": [9, 5]}]}]}]}
         tree = Tree(tree_dict)
