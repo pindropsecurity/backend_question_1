@@ -8,16 +8,15 @@ from tree import TreeLeaf
 
 class TestTreeMath(unittest.TestCase):
 
-    def test_tree_init(self):
-        operand = AdditionOperator.AdditionOperator()
-        self.assertRaises(ValueError, TreeNode.TreeNode, operand, 1, 1)
 
     def test_one_plus_one(self):
         operand = AdditionOperator.AdditionOperator()
         left_hand = TreeLeaf.TreeLeaf(1)
         right_hand = TreeLeaf.TreeLeaf(1)
 
-        tree = TreeNode.TreeNode(operand, left_hand, right_hand)
+        tree = TreeNode.TreeNode(operand)
+        tree.add_leaf(left_hand)
+        tree.add_leaf(right_hand)
 
         self.assertEquals(2, tree.get_value())
 
@@ -29,8 +28,13 @@ class TestTreeMath(unittest.TestCase):
         one = TreeLeaf.TreeLeaf(1)
         two = TreeLeaf.TreeLeaf(2)
 
-        division_tree = TreeNode.TreeNode(operand_division, one, two);
-        addition_tree = TreeNode.TreeNode(operand_addition, one, division_tree)
+        division_tree = TreeNode.TreeNode(operand_division);
+        division_tree.add_leaf(one)
+        division_tree.add_leaf(two)
+
+        addition_tree = TreeNode.TreeNode(operand_addition)
+        addition_tree.add_leaf(one)
+        addition_tree.add_leaf(division_tree)
 
         self.assertAlmostEqual(1.5, addition_tree.get_value())
 
@@ -42,8 +46,10 @@ class TestTreeMath(unittest.TestCase):
         two = TreeLeaf.TreeLeaf(2)
         three = TreeLeaf.TreeLeaf(3)
 
-        two_minus_three = TreeNode.TreeNode(subtraction, two, three)
-        one_minus_two_minus_three = TreeNode.TreeNode(subtraction, one, two_minus_three)
+        one_minus_two_minus_three = TreeNode.TreeNode(subtraction)
+        one_minus_two_minus_three.add_leaf(one)
+        one_minus_two_minus_three.add_leaf(two)
+        one_minus_two_minus_three.add_leaf(three)
 
         output = one_minus_two_minus_three.get_value()
         self.assertEqual(-4, output)

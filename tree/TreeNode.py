@@ -5,27 +5,40 @@ from TreeLeaf import TreeLeaf
 
 class TreeNode(TreeLeaf):
 
-    def __init__(self, operator, left, right):
-        if not isinstance(left, TreeLeaf):
-            raise ValueError("Left hand value must be a tree")
-
-        if not isinstance(left, TreeLeaf):
-            raise ValueError("Right hand value must be a tree")
-
+    def __init__(self, operator):
+        if not isinstance(operator, Operator.Operator):
+            raise ValueError("Initialized value is not an operator")
         self.operator = operator
-        self.left = left
-        self.right = right
+        self.leafs = [];
+
+    def add_leaf(self, leaf):
+        if not isinstance(leaf, TreeLeaf):
+            raise ValueError("The provided value is not a leaf")
+        elif leaf is None:
+            raise ValueError("Cannot accept a null leaf")
+
+        self.leafs.append(leaf)
+
+    def add_all_leafs(self, leaf_list):
+        for leaf in leaf_list:
+            self.add_leaf(leaf)
 
     def get_value(self):
+        size = len(self.leafs)
 
-        if self.left is None:
-            raise ValueError("There is no left hand side to this operator ")
-        else:
-            left_value = self.left.get_value()
+        if size < 2:
+            raise ValueError("Not enough values in list to perform calculation")
 
-        if self.right is None:
-            raise ValueError("There is no right hand side to this operator ")
-        else:
-            right_value = self.right.get_value()
+        result = None
+        for i in range(size - 1):
+            if i == 0:
+                left_hand = self.leafs[0].get_value()
+                right_hand = self.leafs[1].get_value()
 
-        return self.operator.calculate(left_value, right_value)
+                result = self.operator.calculate(left_hand, right_hand)
+            else:
+                right_hand = self.leafs[i + 1].get_value()
+
+                result = self.operator.calculate(result, right_hand)
+
+        return result
