@@ -10,5 +10,7 @@ class DivisionOperator(Operator):
     def calculate(self, left, right):
         if right == 0:
             return float('nan')
-        else:
+        elif isinstance(right, int):
             return left / float(right)
+        else:
+            return left/right
