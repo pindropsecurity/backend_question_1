@@ -2,6 +2,7 @@ __author__ = 'andy'
 import unittest
 from operators import AdditionOperator
 from operators import DivisionOperator
+from operators import SubtractionOperator
 from tree import TreeNode
 from tree import TreeLeaf
 
@@ -33,4 +34,17 @@ class TestTreeMath(unittest.TestCase):
 
         self.assertAlmostEqual(1.5, addition_tree.get_value())
 
+    #test 1-2-3=-4
+    def test_stated_example(self):
+        subtraction = SubtractionOperator.SubtractionOperator()
+
+        one = TreeLeaf.TreeLeaf(1)
+        two = TreeLeaf.TreeLeaf(2)
+        three = TreeLeaf.TreeLeaf(3)
+
+        two_minus_three = TreeNode.TreeNode(subtraction, two, three)
+        one_minus_two_minus_three = TreeNode.TreeNode(subtraction, one, two_minus_three)
+
+        output = one_minus_two_minus_three.get_value()
+        self.assertEqual(-4, output)
 
