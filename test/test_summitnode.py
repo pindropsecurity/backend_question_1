@@ -1,9 +1,9 @@
-__author__ = 'Greg'
-
 import unittest
 
 from summit.node import SummitNode
 from summit.exceptions import InvalidOperator, NotEnoughChildren
+
+__author__ = 'Greg'
 
 
 class TestSummitNode(unittest.TestCase):
@@ -49,7 +49,8 @@ class TestSummitNode(unittest.TestCase):
 
     def test_div_by_zero(self):
         """
-        Test to make sure that the proper exception for division by zero is thrown.
+        Test to make sure that the proper exception for division by zero is
+        thrown.
         """
 
         with self.assertRaises(ZeroDivisionError):
@@ -75,3 +76,23 @@ class TestSummitNode(unittest.TestCase):
         node2 = SummitNode('+', [3, node1])
 
         self.assertEqual(node2.value, 6)
+
+    def check_dynamic(self, op, args):
+        sm = SummitNode(op, args[0])
+        self.assertEqual(sm.value, args[1],
+                         'Evaluating : Op [%s] | values %s | expected [%d]'
+                         % (op, str(args[0]), args[1]))
+
+    def test_all_operators_good(self):
+        """
+        Test all operators available for simple a case.
+        """
+        op_map = {
+            "+": ([1, 1], 2),
+            "-": ([1, 1], 1),
+            "*": ([2, 3], 6),
+            "/": ([4, 2], 2),
+        }
+
+        for op, args in op_map.items():
+            yield self.check_dynamic(op, args)
