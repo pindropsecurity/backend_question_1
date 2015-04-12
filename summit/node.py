@@ -21,13 +21,11 @@ class SummitNode(object):
         * You may only perform the operators in the list above (see: Operations allowed)
         * Division by 0 (Zero) is / will always be fatal, tread carefully!
 
-
     Example::
 
         sm = SummitNode('+', [1,2,3])
         > print(sm.value)
         6
-
 
     """
 
@@ -51,7 +49,6 @@ class SummitNode(object):
 
         self.value = self._evaluate()
 
-
     def _validate_operator(self):
         """
         Validate given operator with the allowed operators list
@@ -74,6 +71,16 @@ class SummitNode(object):
 
     @staticmethod
     def _get_child_value(child):
+        """
+        Retrieves the value from the given child. In the case of a SummitNode instance, this is the SumitNode.value
+        attribute, otherwise, it attempts to cast the value as a float and will return the result.
+
+        :param child: A child from SummitNode.children, may be an int/float or another SummitNode instance
+        :type child: int, float, ~summit.node.SummitNode
+        :raises ~summit.exceptions.RealNumberExpected: Raised for a child value other than SummitNode or an int/float
+        :return: The value of the given child
+        :rtype: float
+        """
         if isinstance(child, SummitNode):
             return child.value
         else:
@@ -83,16 +90,35 @@ class SummitNode(object):
             except ValueError:
                 raise RealNumberExpected
 
+    @staticmethod
+    def _divide(x, y):
+        """
+        Performs division operation using subjects x - y.
+
+        :param x: the dividend
+        :type x: float
+        :param y: the divisor to be applied to the dividend
+        :raises summit.exceptions.ZeroDivisionError: Raised when division by zero is attempted
+        :returns: The result of the division
+        :rtype: float
+        """
+        if y == 0:
+            raise ZeroDivisionError('Cannot divide by zero, result is not real')
+        return x / y
+
     def _evaluate(self):
         """
-        Evaluate the children against the provided operator, sets self.value
+        Evaluate the children against the provided operator, returns result of evaluation
+
+        :returns: The result of evaluating all children in the current SummitNode
+        :rtype: float
         """
 
         op_map = {
             '+': lambda x, y: x + y,
             '-': lambda x, y: x - y,
             '*': lambda x, y: x * y,
-            '/': lambda x, y: x / y
+            '/': self._divide
         }
 
         operation = op_map[self.operator]

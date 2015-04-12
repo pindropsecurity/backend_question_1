@@ -46,3 +46,32 @@ class TestSummitNode(unittest.TestCase):
 
         sm = SummitNode('+', [1, 1])
         self.assertEqual(sm.value, 2)
+
+    def test_div_by_zero(self):
+        """
+        Test to make sure that the proper exception for division by zero is thrown.
+        """
+
+        with self.assertRaises(ZeroDivisionError):
+            SummitNode('/', [1, 0])
+
+    def test_two_tier(self):
+        """
+        Test the expanded evaluation capability for nested SummitNodes.
+
+        Given :
+
+        node1 =
+            operator = '+'
+            children = [1, 2]
+        node2 =
+            operator = '+'
+            children = [3, node1]
+
+        expect node2.value = 6
+        """
+
+        node1 = SummitNode('+', [1, 2])
+        node2 = SummitNode('+', [3, node1])
+
+        self.assertEqual(node2.value, 6)
