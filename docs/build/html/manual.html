@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>User Manual &mdash; Summit 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Summit 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Developer Reference" href="summit.html" />
+    <link rel="prev" title="Welcome to Summit’s documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="summit.html" title="Developer Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Summit’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Summit 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-manual">
+<h1>User Manual<a class="headerlink" href="#user-manual" title="Permalink to this headline">¶</a></h1>
+<p>The Summit project provides a simple mathematical evaluation tool in the
+form of a class named <a class="reference internal" href="summit.html#summit.node.SummitNode" title="summit.node.SummitNode"><code class="xref py py-class docutils literal"><span class="pre">SummitNode</span></code></a>.</p>
+<div class="section" id="operations">
+<h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<p>Using this object and standard integer or float literals, you can perform the
+following operations.</p>
+<blockquote>
+<div><ul class="simple">
+<li>(+) Addition</li>
+<li>(-) Subtraction</li>
+<li>(*) Multiplication</li>
+<li>(/) Division</li>
+</ul>
+</div></blockquote>
+<p>Now, knowing the operations possible, you probably want to know how to actually
+use these. First, we need to know what we can perform these operations against.</p>
+</div>
+<div class="section" id="operands-children">
+<h2>Operands (Children)<a class="headerlink" href="#operands-children" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="summit.html#summit.node.SummitNode" title="summit.node.SummitNode"><code class="xref py py-class docutils literal"><span class="pre">SummitNode</span></code></a> requires a <em>minimum</em> of <em>two</em> operands to be
+provided. This is so you can fulfill both &#8220;sides&#8221; of the simple operations
+listed in the <cite>Operations</cite> section. All four operations require a minimum of
+two operands and as such, so does <a class="reference internal" href="summit.html#summit.node.SummitNode" title="summit.node.SummitNode"><code class="xref py py-class docutils literal"><span class="pre">SummitNode</span></code></a>.</p>
+<p>Now, what are valid operands ?</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="summit.html#summit.node.SummitNode" title="summit.node.SummitNode"><code class="xref py py-class docutils literal"><span class="pre">SummitNode</span></code></a> <span class="classifier-delimiter">:</span> <span class="classifier">You can model more complex</span></dt>
+<dd><p class="first last">expressions by nesting multiple <a class="reference internal" href="summit.html#summit.node.SummitNode" title="summit.node.SummitNode"><code class="xref py py-class docutils literal"><span class="pre">SummitNode</span></code></a>
+instances.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">int</span></code></a>: Standard Python integers</p>
+</li>
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">float</span></code></a>: Standard Python float values</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="simple-example">
+<h2>Simple Example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
+<p>To learn how to use this project, it&#8217;s best to work with practical examples.
+The following will be a very simple example to get your feet wet, there will
+be more in depth examples later.</p>
+<p>Lets start with a simple script;</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">summit</span> <span class="kn">import</span> <span class="n">SummitNode</span>
+
+<span class="n">root</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="c"># will print &#39;6&#39;</span>
+</pre></div>
+</div>
+<p>The above script is 3 lines of code, simple right? Now to the explanation!</p>
+<p>The import at the top is basic Python, if you are not familiar, please use
+your search engine of choice and look for &#8220;Dive into Python&#8221; before starting.</p>
+<p>Next, a new SummitNode is instantiated with the addition operator &#8216;+&#8217; and two
+integer values that we want summed within a list.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">root</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Why a list ? Well, we need to
+allow two or more elements to be operated on, and this is a straightforward
+method of representing that!</p>
+<p>The SummitNode will automatically evaluate the expression upon
+instantiation. Upon successful evaluation, the result can be retrieved
+from the <cite>value</cite> attribute.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+<span class="c"># will print &#39;6&#39;</span>
+</pre></div>
+</div>
+<p>Now, for something more complex!</p>
+</div>
+<div class="section" id="advanced-example">
+<h2>Advanced Example<a class="headerlink" href="#advanced-example" title="Permalink to this headline">¶</a></h2>
+<p>Given the following code, the SummitNode will allow you to evaluate more
+complex mathematical formulae.</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">summit</span> <span class="kn">import</span> <span class="n">SummitNode</span>
+
+<span class="n">node1</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="c"># 2</span>
+<span class="n">node2</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="c"># 8</span>
+<span class="n">node3</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="p">,</span><span class="mi">2</span><span class="p">])</span> <span class="c"># 8</span>
+<span class="n">node4</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">node2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="c"># 4</span>
+<span class="n">node5</span> <span class="o">=</span> <span class="n">SummitNode</span><span class="p">(</span><span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">node4</span><span class="p">,</span> <span class="n">node3</span><span class="p">])</span> <span class="c"># 32</span>
+</pre></div>
+</td></tr></table></div>
+<p>In the example above, the ability to mix integers (or floats) and SummitNodes
+can be used to build parts of a larger expression.</p>
+<p>Of course, in the above examples you have only been shown two operands being
+provided to SummitNode, however, this is not a limitation, you can have many
+more operands, the only limitation is you must have <em>at least</em> two operands.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User Manual</a><ul>
+<li><a class="reference internal" href="#operations">Operations</a></li>
+<li><a class="reference internal" href="#operands-children">Operands (Children)</a></li>
+<li><a class="reference internal" href="#simple-example">Simple Example</a></li>
+<li><a class="reference internal" href="#advanced-example">Advanced Example</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Summit&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="summit.html"
+                        title="next chapter">Developer Reference</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/manual.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Greg Gullett.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/manual.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

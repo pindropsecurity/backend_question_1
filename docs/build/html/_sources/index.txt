@@ -1,0 +1,24 @@
+.. Summit documentation master file, created by
+   sphinx-quickstart on Sun Apr 12 17:14:39 2015.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Summit's documentation!
+==================================
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   manual
+   summit
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
