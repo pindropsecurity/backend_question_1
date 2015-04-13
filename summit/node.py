@@ -103,8 +103,12 @@ class SummitNode(object):
         else:
             try:
                 tmp_val = float(child)
+                if str(tmp_val).endswith(".0"):
+                    tmp_val = int(child)
                 return tmp_val
             except ValueError:
+                raise RealNumberExpected
+            except TypeError:
                 raise RealNumberExpected
 
     @staticmethod
@@ -123,6 +127,11 @@ class SummitNode(object):
         if y == 0:
             raise ZeroDivisionError(
                 'Cannot divide by zero, result is not real')
+
+        if isinstance(x, int) and isinstance(y, int):
+            # Integer division for base integers
+            return x // y
+
         return x / y
 
     def _evaluate(self):
