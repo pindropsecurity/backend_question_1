@@ -12,7 +12,10 @@ Submissions
 
 ## Questions 
 
-####Python Programming
+####Programming
+
+This exercise may be done in the candidate's choice of language. Python is preferred but feel free to use Java or C++ if you are stronger in those languages.
+
 You are given a tree representing a basic mathematical expression, where:
 - The number of children extending from any node is greater than or equal to 2.
 - Each node could either be a mathematical operator or a real number. 
@@ -20,10 +23,10 @@ You are given a tree representing a basic mathematical expression, where:
 - The mathematical operators come from the set (-, +, /, *)
 - If a node is a mathematical operator, the operation should be evaluated left-to-right:
  - So, if you have a subtraction node with 1, 2 and 3 you would evaluate as 1 - 2 - 3 = -4. Write a method that calculates the value of such a tree.
-Write an python program that calculates the value of the tree. Assume your code is part of a production grade library, so exceptional cases should be handled accordingly.
+Write a program that calculates the value of the tree. Assume your code is part of a production grade library, so exceptional cases should be handled accordingly.
 
 **NOTE**
-- Your implementation should use *only* Python standard library modules. Do not `import some_graph_libary`. Write your own tree implementation and traversal methods.
+- Your implementation should use *only* standard library modules. Do not use a pre-existing graph library. Write your own tree implementation and traversal methods.
 
 Some tips:
 - Classes, inheritance and encapsulation are your friends
