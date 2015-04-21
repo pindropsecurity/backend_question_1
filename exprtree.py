@@ -84,15 +84,14 @@ class Operation(Node):
 	   
 	def __init__(self, tok):
 		Node.__init__(self, tok)
-		self.operands = []
-		self.op = None
+		self.__operands = []
 			
 	def __str__(self):
 		'''returns string representation of expression as defined by
 		   operator (token) and operands (child nodes)'''
 		
-		if self.operands:
-			return str(self.token()).join([str(child) for child in self.operands])
+		if self.__operands:
+			return str(self.token()).join([str(child) for child in self.__operands])
 		else:
 			return str(self.token());
 			
@@ -107,18 +106,21 @@ class Operation(Node):
 			raise NodeError('attempt to add invalid operator of type %s' %\
 				(operand.__class__.__name__))
 				
-		self.operands.append(operand);
+		self.__operands.append(operand);
+		
+	def arity(self):
+		return len(self.__operands)
 		
 	def evaluate(self):
-		if not self.operands:
+		if not self.__operands:
 			raise OperationError("operation '%s' has no operands" %\
 				(str(self.token())))
-		elif len(self.operands) == 1:
+		elif len(self.__operands) == 1:
 			raise OperationError("operation '%s' has insufficient operands (%s)" %\
 				(str(self.token()), str(self)))
 				
-		result = self.operands[0].evaluate()
-		for rhs in self.operands[1:]:
+		result = self.__operands[0].evaluate()
+		for rhs in self.__operands[1:]:
 			result = self.operate(result, rhs)
 			
 		return result
@@ -170,14 +172,14 @@ class Divide(Operation):
 			
 		return lhs / divisor
 
-	def add(self, operand):
+	def addOperand(self, operand):
 		'''specialization of method rejects zero
 		   TODO: should test for zero be more robust since floating point
 		   is involved?  seems like a python novice question ...'''
-		if len(self.operands) > 0 \
+		if self.arity() > 0 \
 			and isinstance(operand, Num) \
 			and not operand.evaluate():
-			raise OperationError('divide by zero')
+			raise OperationError('guaranteed divide by zero')
 		else:
 			Operation.addOperand(self, operand)		
 		
