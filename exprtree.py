@@ -90,10 +90,12 @@ class Operation(Node):
 		'''returns string representation of expression as defined by
 		   operator (token) and operands (child nodes)'''
 		
-		if self.__operands:
+		if self.arity() > 1:
 			return str(self.token()).join([str(child) for child in self.__operands])
+		elif self.arity() == 1:
+			return '%s%s' % (str(self.lhs()),self.token());
 		else:
-			return str(self.token());
+			return ''
 			
 	def operate(self, lhs, rhs):
 		'''performs mathematical binary operation upon to real numbers'''
@@ -111,15 +113,23 @@ class Operation(Node):
 	def arity(self):
 		return len(self.__operands)
 		
+	def lhs(self):
+		'''returns the first operand (i.e. (l)eft-(h)and-(s)ide'''
+		if self.arity():
+			return self.__operands[0]
+		else:
+			raise OperationError("operation '%s' has no left-hand-side" %\
+				(str(self.token())))
+		
 	def evaluate(self):
 		if not self.__operands:
 			raise OperationError("operation '%s' has no operands" %\
 				(str(self.token())))
-		elif len(self.__operands) == 1:
+		elif self.arity() == 1:
 			raise OperationError("operation '%s' has insufficient operands (%s)" %\
 				(str(self.token()), str(self)))
 				
-		result = self.__operands[0].evaluate()
+		result = self.lhs().evaluate()
 		for rhs in self.__operands[1:]:
 			result = self.operate(result, rhs)
 			
