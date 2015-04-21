@@ -118,6 +118,11 @@ class Operation(Node):
 		else:
 			return self.token();
 			
+	def operate(self, lhs, rhs):
+		'''performs mathematical binary operation upon to real numbers'''
+		raise OperationError('%sattempt to employ unspecialized operation (class %s)' %\
+			(self.location(), self.__class__.__name__))
+	
 	def add(self, operand):
 		'''adds an operand to the operation.'''
 		if not (isinstance(operand, Num) or isinstance(operand, Operation)):
@@ -126,11 +131,6 @@ class Operation(Node):
 				
 		self.operands.append(operand);
 		
-	def __operate(self, lhs, rhs):
-		'''performs mathematical binary operation upon to real numbers'''
-		raise OperationError('%sattempt to employ unspecialized operation (class %s)' %\
-			(self.location(), self.__class__.__name__))
-	
 	def evaluate(self):
 		if not self.operands:
 			raise OperationError("%soperation '%s' has no operands" %\
@@ -141,7 +141,7 @@ class Operation(Node):
 				
 		result = self.operands[0].evaluate()
 		for rhs in self.operands[1:]:
-			result = self.__operate(result, rhs)
+			result = self.operate(result, rhs)
 			
 		return result
 		
@@ -151,7 +151,7 @@ class Subtract(Operation):
 	def __init__(self, line=None):
 		Operation.__init__(self, '-', line=line)
 		
-	def __operate(self, lhs, rhs):
+	def operate(self, lhs, rhs):
 		return lhs - rhs.evaluate()
 		
 class Add(Operation):
@@ -160,7 +160,7 @@ class Add(Operation):
 	def __init__(self, line=None):
 		Operation.__init__(self, '+', line=line)
 		
-	def __operate(self, lhs, rhs):
+	def operate(self, lhs, rhs):
 		return lhs + rhs.evaluate()
 		
 class Multiply(Operation):
@@ -169,7 +169,7 @@ class Multiply(Operation):
 	def __init__(self, line=None):
 		Operation.__init__(self, '*', line=line)
 		
-	def __operate(self, lhs, rhs):
+	def operate(self, lhs, rhs):
 		return lhs * rhs.evaluate()
 		
 class DivideByZero(OperationError):
@@ -189,13 +189,12 @@ class Divide(Operation):
 	def __init__(self, line=None):
 		Operation.__init__(self, '+', line=line)
 		
-	def __operate(self, lhs, rhs):
+	def operate(self, lhs, rhs):
 		divisor = rhs.evaluate()
 		if not divisor:
 			raise DivideByZero(self, rhs)
 			
 		return lhs / divisor
-
 
 	def add(self, operand):
 		'''specialization of method rejects zero
@@ -203,7 +202,7 @@ class Divide(Operation):
 		   is involved?  seems like a python novice question ...'''
 		if len(self.operands) > 0 \
 			and isinstance(operand, Num) \
-			and not Num.evaluate():
+			and not operand.evaluate():
 			raise OperationError('%sdivide by zero' % (operand.location()))
 		else:
 			Operation.add(self, operand)		

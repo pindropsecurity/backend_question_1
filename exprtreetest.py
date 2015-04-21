@@ -2,6 +2,7 @@
 
 import unittest
 import exprtree
+import math
 
 class NodeBehavior(unittest.TestCase):
 	'''verifies base class, Node, expected behavior'''
@@ -93,11 +94,87 @@ class OperationBehavior(unittest.TestCase):
 		self.assertRaises(exprtree.OperationError, sub.evaluate);
 		
 		
+class AddBehavior(unittest.TestCase):
+	'''verifies class, Add, expected behavior'''
+	
+	def testSimpleEvaluation(self):
+		'''class Add should properly evaluate two operands'''
+		op = exprtree.Add()
+		op.add(exprtree.Num(42))
+		op.add(exprtree.Num(41))
+		
+		self.assertEquals(83,op.evaluate())
+
+	def testExtendedEvaluation(self):
+		'''class Add should properly evaluate two operands'''
+		op = exprtree.Add()
+		op.add(exprtree.Num(1))
+		op.add(exprtree.Num(2))
+		op.add(exprtree.Num(3))
+		
+		self.assertEquals(6, op.evaluate())
+
 class SubtractBehavior(unittest.TestCase):
 	'''verifies class, Subtract, expected behavior'''
 	
-	def testInsufficient(self):
-		''' '''
+	def testSimpleEvaluation(self):
+		'''class Subtract should properly evaluate two operands'''
+		op = exprtree.Subtract()
+		op.add(exprtree.Num(42))
+		op.add(exprtree.Num(41))
+		
+		self.assertEquals(1,op.evaluate())
+
+	def testExtendedEvaluation(self):
+		'''class Subtract should properly evaluate two operands'''
+		op = exprtree.Subtract()
+		op.add(exprtree.Num(1))
+		op.add(exprtree.Num(2))
+		op.add(exprtree.Num(3))
+		
+		self.assertEquals(-4, op.evaluate())
+
+class MultiplyBehavior(unittest.TestCase):
+	'''verifies class, Multiply, expected behavior'''
+	
+	def testSimpleEvaluation(self):
+		'''class Multiply should properly evaluate two operands'''
+		op = exprtree.Multiply()
+		op.add(exprtree.Num(math.pi))
+		op.add(exprtree.Num(2.0))
+		
+		expected = math.pi * 2.0
+		self.assertEquals(expected ,op.evaluate())
+
+	def testExtendedEvaluation(self):
+		'''class Multiplyevaluate two operands'''
+		op = exprtree.Multiply()
+		op.add(exprtree.Num(math.pi))
+		op.add(exprtree.Num(2.0))
+		op.add(exprtree.Num(0.5))
+		
+		self.assertEquals(math.pi, op.evaluate())
+
+class DivideBehavior(unittest.TestCase):
+	'''verifies class, Divide, expected behavior'''
+	
+	def testSimpleEvaluation(self):
+		'''class Divide should properly evaluate two operands'''
+		op = exprtree.Divide()
+		op.add(exprtree.Num(math.pi))
+		op.add(exprtree.Num(2.0))
+		
+		expected = math.pi / 2.0
+		self.assertEquals(expected ,op.evaluate())
+
+	def testExtendedEvaluation(self):
+		'''class Divide evaluate two operands'''
+		op = exprtree.Divide()
+		op.add(exprtree.Num(math.pi))
+		op.add(exprtree.Num(2.0))
+		op.add(exprtree.Num(0.5))
+		
+		self.assertEquals(math.pi, op.evaluate())
 
 if __name__ == '__main__':
 	unittest.main()
