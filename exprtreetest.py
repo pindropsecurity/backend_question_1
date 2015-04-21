@@ -81,6 +81,23 @@ class OperationBehavior(unittest.TestCase):
 		op.add(exprtree.Num(50))
 		op.add(exprtree.Num(42))
 		self.assertRaises(exprtree.OperationError, op.evaluate)
+		
+	def testInsufficientOperands(self):
+		'''class Operation should raise an exception when it holds less 
+		   than two operands'''
+		   
+		sub = exprtree.Subtract()
+		self.assertRaises(exprtree.OperationError, sub.evaluate);
+		
+		sub.add(exprtree.Num(42))
+		self.assertRaises(exprtree.OperationError, sub.evaluate);
+		
+		
+class SubtractBehavior(unittest.TestCase):
+	'''verifies class, Subtract, expected behavior'''
+	
+	def testInsufficient(self):
+		''' '''
 
 if __name__ == '__main__':
 	unittest.main()

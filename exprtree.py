@@ -62,6 +62,7 @@ class Node:
 		else:
 			return str(self.tok)
 
+
 	def location(self):
 		'''returns location in source data, if present.
 		   otherwise returns empty string'''
@@ -126,6 +127,7 @@ class Operation(Node):
 		self.operands.append(operand);
 		
 	def __operate(self, lhs, rhs):
+		'''performs mathematical binary operation upon to real numbers'''
 		raise OperationError('%sattempt to employ unspecialized operation (class %s)' %\
 			(self.location(), self.__class__.__name__))
 	
@@ -137,11 +139,74 @@ class Operation(Node):
 			raise OperationError("%soperation '%s' has insufficient operands (%s)" %\
 				(self.location(), self.token(), str(self)))
 				
-		result = self.operands[0]
+		result = self.operands[0].evaluate()
 		for rhs in self.operands[1:]:
 			result = self.__operate(result, rhs)
 			
 		return result
+		
+class Subtract(Operation):
+	'''Implements subtraction'''
+	
+	def __init__(self, line=None):
+		Operation.__init__(self, '-', line=line)
+		
+	def __operate(self, lhs, rhs):
+		return lhs - rhs.evaluate()
+		
+class Add(Operation):
+	'''Implements addition'''
+	
+	def __init__(self, line=None):
+		Operation.__init__(self, '+', line=line)
+		
+	def __operate(self, lhs, rhs):
+		return lhs + rhs.evaluate()
+		
+class Multiply(Operation):
+	'''Implements multiplication'''
+	
+	def __init__(self, line=None):
+		Operation.__init__(self, '*', line=line)
+		
+	def __operate(self, lhs, rhs):
+		return lhs * rhs.evaluate()
+		
+class DivideByZero(OperationError):
+	'''Error to flag divide by zero in expression tree'''
+	
+	def __init__(self, opNode, divisorNode):
+		ExprTreeError.__init__(self,
+			"%sdivide by zero caused by subexpression" % (opNode.location()))
+		
+		if divisorNode.location():
+			self.msg += " at %s'%s'" % \
+				(divisorNode.location(), divisorNode.token()) 
+
+class Divide(Operation):
+	'''Implements division'''
+	
+	def __init__(self, line=None):
+		Operation.__init__(self, '+', line=line)
+		
+	def __operate(self, lhs, rhs):
+		divisor = rhs.evaluate()
+		if not divisor:
+			raise DivideByZero(self, rhs)
+			
+		return lhs / divisor
+
+
+	def add(self, operand):
+		'''specialization of method rejects zero
+		   TODO: should test for zero be more robust since floating point
+		   is involved?  seems like a python novice question ...'''
+		if len(self.operands) > 0 \
+			and isinstance(operand, Num) \
+			and not Num.evaluate():
+			raise OperationError('%sdivide by zero' % (operand.location()))
+		else:
+			Operation.add(self, operand)		
 		
 class Tree:
 	'''Tree which defines simple mathematical expression.
