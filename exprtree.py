@@ -19,7 +19,7 @@ class ExprTreeError(Exception):
 		self.__msg = s;
 
 	def __str__(self):
-		return self.msg;
+		return self.__msg;
 
 
 class NodeError(ExprTreeError):
@@ -119,15 +119,23 @@ class Operation(Node):
 			return self.__operands[0]
 		else:
 			raise OperationError("operation '%s' has no left-hand-side" %\
-				(str(self.token())))
+				(self.token()))
+				
+	def term(self, position):
+		'''returns the operand which resides at specified position'''
+		if position < self.arity():
+			return self.__operands[position]
+		else:
+			raise IndexError("operation '%s' has only %d terms" %\
+				(self.token(), self.arity()))
 		
 	def evaluate(self):
 		if not self.__operands:
 			raise OperationError("operation '%s' has no operands" %\
-				(str(self.token())))
+				(self.token()))
 		elif self.arity() == 1:
 			raise OperationError("operation '%s' has insufficient operands (%s)" %\
-				(str(self.token()), str(self)))
+				(self.token(), str(self)))
 				
 		result = self.lhs().evaluate()
 		for rhs in self.__operands[1:]:
@@ -165,20 +173,21 @@ class Multiply(Operation):
 class DivideByZero(OperationError):
 	'''Error to flag divide by zero in expression tree'''
 	
-	def __init__(self, opNode, divisorNode):
-		DivideByZero.__init__(self,
-			"divide by zero caused by subexpression")
+	def __init__(self, divisorNode):
+		OperationError.__init__(self,
+			"divide by zero caused by subexpression '%s'" %\
+				(divisorNode.token()))
 
 class Divide(Operation):
 	'''Implements division'''
 	
 	def __init__(self):
-		Operation.__init__(self, '+')
+		Operation.__init__(self, '/')
 		
 	def operate(self, lhs, rhs):
 		divisor = rhs.evaluate()
 		if not divisor:
-			raise DivideByZero(self, rhs)
+			raise DivideByZero(rhs)
 			
 		return lhs / divisor
 
