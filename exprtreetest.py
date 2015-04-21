@@ -189,7 +189,7 @@ class ExprTreeBehavior(unittest.TestCase):
 		
 	def testHetergenousOperations(self):
 		'''expression containing valid multiple operations should evaluate successfully.
-		
+		   
 		   expression tree to be tested:
 		   
 		               +
@@ -197,11 +197,103 @@ class ExprTreeBehavior(unittest.TestCase):
 		 83  41   math.pi   2            pi   -2
 		 
 		 the result should be 42 + 2pi + (-42) + (-pi/2) = 3*pi/2 '''
-		   		
-		#expr = exprtree.ExprTree(exprtree.Add())
-		#expr.root.addOperand(exprtree.Subtract())
-		#expr.root.operands
+		
+		from exprtree import Num
+		
+		expr = exprtree.ExprTree(exprtree.Add())
+		
+		# 83 - 41
+		expr.root.addOperand(exprtree.Subtract())
+		expr.root.term(0).addOperand(Num(83))
+		expr.root.term(0).addOperand(Num(41))
+		
+		# math.pi * 2
+		expr.root.addOperand(exprtree.Multiply())
+		expr.root.term(1).addOperand(Num(math.pi))
+		expr.root.term(1).addOperand(Num(2))
 
+		# -42
+		expr.root.addOperand(Num(-42))
+		
+		# pi / -2
+		expr.root.addOperand(exprtree.Divide())
+		expr.root.term(3).addOperand(Num(math.pi))
+		expr.root.term(3).addOperand(Num(-2))
+		
+		self.assertEquals(3 * math.pi / 2, expr.evaluate())
+		
+
+	def testSubmergedMissingOperand(self):
+		'''expression containing at a 'lower level' an operation with insufficient operands
+		   should detect the condition upon evaluation
+		
+		   expression tree to be tested:
+		   
+		               +
+		   -              *       -42       /
+		 83  41   math.pi   2            pi   <missing>'''
+		
+		from exprtree import Num
+		
+		expr = exprtree.ExprTree(exprtree.Add())
+		
+		# 83 - 41
+		expr.root.addOperand(exprtree.Subtract())
+		expr.root.term(0).addOperand(Num(83))
+		expr.root.term(0).addOperand(Num(41))
+		
+		# math.pi * 2
+		expr.root.addOperand(exprtree.Multiply())
+		expr.root.term(1).addOperand(Num(math.pi))
+		expr.root.term(1).addOperand(Num(2))
+
+		# -42
+		expr.root.addOperand(Num(-42))
+		
+		# pi / -2
+		expr.root.addOperand(exprtree.Divide())
+		expr.root.term(3).addOperand(Num(math.pi))
+		
+		self.assertRaises(exprtree.OperationError, expr.evaluate)
+
+	def testEvaluatedDivideByZero(self):
+		'''expression which upon evaluation encounters a division by zero
+		   should detect the event before evaluation by python machine (or libs)
+		
+		   expression tree to be tested:
+		   
+		               +
+		   -              *       -42       /
+		 83  41   math.pi   2            pi    -
+		                                     1   1'''
+		                                     
+		
+		from exprtree import Num,Subtract
+		
+		expr = exprtree.ExprTree(exprtree.Add())
+		
+		# 83 - 41
+		expr.root.addOperand(Subtract())
+		expr.root.term(0).addOperand(Num(83))
+		expr.root.term(0).addOperand(Num(41))
+		
+		# math.pi * 2
+		expr.root.addOperand(exprtree.Multiply())
+		expr.root.term(1).addOperand(Num(math.pi))
+		expr.root.term(1).addOperand(Num(2))
+
+		# -42
+		expr.root.addOperand(Num(-42))
+		
+		# pi / (1 - 1)
+		expr.root.addOperand(exprtree.Divide())
+		expr.root.term(3).addOperand(Num(math.pi))
+		expr.root.term(3).addOperand(Subtract())
+		expr.root.term(3).term(1).addOperand(Num(1))
+		expr.root.term(3).term(1).addOperand(Num(1))
+		
+		self.assertRaises(exprtree.DivideByZero, expr.evaluate)
+		
 if __name__ == '__main__':
 	unittest.main()
 	
