@@ -10,6 +10,10 @@
     Please excuse my obsession with line numbers.  If I have time,
     exprtree will parse an expression string, when run as a program.
     Unittests have been split into a different module.'''
+    
+import numbers
+import operator
+
 
 class ExprTreeError(Exception):
 	'''base error class for this module'''
@@ -34,13 +38,30 @@ class Node:
        intended as base class to be specialized in all cases of instantiation.
 	   optionally records line on which element originated.'''
 	
-	def __init__(self, line=None):
+	def __init__(self, tok, line=None):				
 		if not (line is None or isinstance(line,int)):
-			raise NodeError('%sline number must be an int (not %s)' %\
+			raise NodeError('%sif specified, line number must be an int (not %s)' %\
 				(self.__class__.__name__, line.__class__.__name__))
+		else:
+			self.line = line
 		
-		self.line = line
-            
+		if tok is None:
+			raise NodeError('%svalue of Node cannot be None' %\
+				(self.location()))
+				
+		self.tok = tok
+			
+	def __str__(self):
+		'''returns string representation of expression as defined by
+		   contents of node and children'''
+		return self.token()
+			
+	def token(self):
+		if self.tok is None:
+			return ''
+		else:
+			return str(self.tok)
+
 	def location(self):
 		'''returns location in source data, if present.
 		   otherwise returns empty string'''
@@ -56,28 +77,71 @@ class Node:
 		raise NodeError('%sattempt to employ unspecialized evaluation (class %s)' %\
 			(self.location(), self.__class__.__name__))
 
+		
 class Num(Node):
-	'''Num represents a number term in the expression.
+	'''Num represents a number term in the expression.'''
 	
-	   NOTE: this class under development and is not usable in its current
-	   state. DO NOT USE IT.
-	   '''	
-	def __init__(self, tok=None, line=None):
-		Node.__init__(self, line=line)
-		raise NodeError(
-			'I told you not to use class %s!' % (self.__class__.__name__))
+	def __init__(self, tok, line=None):
+		Node.__init__(self, tok=tok, line=line)
+		if not isinstance(self.tok, numbers.Real):
+			raise NodeError("%s%s is not a real number" %\
+				(self.location(), self.tok))
+		
+	def evaluate(self):
+		return self.tok;
+
+
+class OperationError(ExprTreeError):
+	'''Exception class which indicates a violation of invariants
+	   in class Operation.'''
+
+	def __init__(self, msg=''):
+		ExprTreeError.__init__(self, msg)
 
 class Operation(Node):
-	'''class Operation represents the application of a successive pair
-	   of numbers to a common operator. e.g. a - b - c - ......
-
-	   NOTE: this class under development and is not usable in its current
-	   state. DO NOT USE IT.'''
-
-	def __init__(self, tok=None, line=None):
-		Node.__init__(self, line=line)
-		raise NodeError(
-			'I told you not to use class %s!' % (self.__class__.__name__))
+	'''class Operation represents the application of a common operator to
+	   a successiive pair of numbers. e.g. a - b - c - ......
+	   In effect, the result value is accumulated.'''
+	   
+	def __init__(self, tok, line=None):
+		Node.__init__(self, tok=tok, line=line)
+		self.operands = []
+		self.op = None
+			
+	def __str__(self):
+		'''returns string representation of expression as defined by
+		   operator (token) and operands (child nodes)'''
+		
+		if self.operands:
+			return self.token().join([str(child) for child in self.operands])
+		else:
+			return self.token();
+			
+	def add(self, operand):
+		'''adds an operand to the operation.'''
+		if not (isinstance(operand, Num) or isinstance(operand, Operation)):
+			raise NodeError('%sattempt to add invalid operator of type %s' %\
+				(self.location(), operand.__class__.__name__))
+				
+		self.operands.append(operand);
+		
+	def __operate(self, lhs, rhs):
+		raise OperationError('%sattempt to employ unspecialized operation (class %s)' %\
+			(self.location(), self.__class__.__name__))
+	
+	def evaluate(self):
+		if not self.operands:
+			raise OperationError("%soperation '%s' has no operands" %\
+				(self.location(), self.token()))
+		elif len(self.operands) == 1:
+			raise OperationError("%soperation '%s' has insufficient operands (%s)" %\
+				(self.location(), self.token(), str(self)))
+				
+		result = self.operands[0]
+		for rhs in self.operands[1:]:
+			result = self.__operate(result, rhs)
+			
+		return result
 		
 class Tree:
 	'''Tree which defines simple mathematical expression.
@@ -92,18 +156,18 @@ class Tree:
 	   expression such an expresion term (i.e. number) may have been
 	   omitted.'''
 
-
+'''
 if __name__ == '__main__':
 	
 	try:
-		x = Node(line=10)
+		x = Node(tok='543', line=10)
 		print '%s value: %d' % (x.location(), x.evaluate()) 
 		
-		y = Node(line='')
+		y = Node(tok=543)
 		
 	except ExprTreeError as e:
 		print 'error: %s' % e
-		
+'''	
 	
 
 
