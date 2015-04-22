@@ -10,7 +10,6 @@
 import numbers
 import operator
 
-
 class ExprTreeError(Exception):
 	'''base error class for this module'''
 	
@@ -56,15 +55,22 @@ class Node:
 			(self.__class__.__name__))
 
 		
+class NumError(NodeError):
+	'''Exception class which indicates a violation of invariants
+	   in class Num.'''
+
+	def __init__(self, msg=''):
+		NodeError.__init__(self, msg)
+
 class Num(Node):
 	'''Num represents a number term in the expression.'''
 	
 	def __init__(self, tok):
 		try:
-		   Node.__init__(self, float(tok))
+			Node.__init__(self, float(tok))
 		except ValueError:
-			raise NodeError("value '%s' cannot be converted to a real number" %\
-				(str(tok)))
+			raise NumError("value '%s' could not be converted to a real number" %\
+				(tok))
 		
 	def evaluate(self):
 		return self.token();
@@ -237,20 +243,109 @@ class ExprTree:
 				
 		self.__dict__["root"] = value
 				
-    
+class OpFactory:
+	'''creates an instance of a concrete Operation subclass based upon
+	   input operator token'''
 
-'''
+	operators = ('-', '+', '*', '/')
+	
+	def __init__(self):
+		pass
+		
+	def supports(self, optok):
+		return optok in self.operators
+		
+	def createOp(self, optok):
+		if not arg in self.operators:
+			raise OperationError(
+				"operation '%s' is not supported" % (optok))
+		elif optok == '-':
+			return Subtract()
+		elif arg == '+':
+			return Add() 
+		elif arg == '*':
+			return Multiply()
+		else:
+			return Divide()
+		
 if __name__ == '__main__':
 	
+	import sys
+	
+	usage = '%s  num  [ (- + * /)  num ] ... ' % __file__
+	
 	try:
-		x = Node('543')
-		print '%s value: %d' % (x.location(), x.evaluate()) 
 		
-		y = Node(tok=543)
+		if len(sys.argv) < 2:
+			print usage
+			exit(1)
+
+		factory = OpFactory()	
+		expr = ExprTree()
+			
+		stack = []	
 		
-	except ExprTreeError as e:
+		position=0
+		for arg in sys.argv[1:]:
+			position += 1
+			if not arg:
+				print "token %d is empty!" % position
+				print usage
+				exit(1)
+			elif factory.supports(arg):
+				if not stack or isinstance(stack[-1], Operation):
+					print "token %d should be a number instead of '%s'" %\
+						(position, arg)
+						
+				num = stack.pop()
+				print '%s was on stack' % str(num.token())
+				if not stack:
+					print 'stack empty - new op'
+					# first operation
+					newop = factory.createOp(arg)
+					newop.addOperand(num)
+					stack.append(newop)
+				elif stack[-1].token() == arg:
+					print 'stack occupied - same op'
+					stack[-1].addOperand(num)
+				else:
+					print 'stack occupied - different op'
+					newop = factory.createOp(arg)
+					newop.addOperand(stack.pop())
+					newop.lhs().addOperand(num)
+					stack.append(newop);
+					
+			elif stack and isinstance(stack[-1], Num):
+				print "token %d should be an operator instead of '%s'" %\
+					(position, arg)
+				print usage
+				exit(1)
+			else:
+				#assume a number
+				try:	
+					stack.append(Num(arg))
+				except NumError:
+					print "token %d: value '%s' cannot be converted to a real number" %\
+						(position, arg)
+					print usage
+					exit(1)
+		
+		if stack and not isinstance(stack[-1], Num):
+			print "last operation does not have enough numbers"
+			exit(1)
+	
+		num = stack.pop();
+		if stack:
+			stack[-1].addOperand(num)
+			expr.root = stack.pop()
+		else:
+			expr.root = num
+			
+		print expr.evaluate()
+		print 'size of stack: %d' % len(stack)
+		
+	except Exception as e:
 		print 'error: %s' % e
-'''	
 	
 
 

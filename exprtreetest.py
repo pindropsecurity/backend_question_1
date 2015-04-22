@@ -30,7 +30,7 @@ class NumBehavior(unittest.TestCase):
 	def testEnforceReal(self):
 		'''instantiation of class Num should reject tokens which are not
 		   real numbers'''
-		self.assertRaises(exprtree.NodeError, exprtree.Num, "")
+		self.assertRaises(exprtree.NumError, exprtree.Num, "")
 		
 	def testEvaluate(self):
 		'''instance of class Num should evaluate to the value with which
