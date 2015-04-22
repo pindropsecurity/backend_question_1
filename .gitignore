@@ -1,0 +1,12 @@
+# by-products of editors
+*.bak
+*.orig
+*~
+# superstitious fallback
+# just in case *~ above
+# doesn't work on some systems
+*.*~
+
+# by-products of code generation
+*.pyc
+
