@@ -7,9 +7,6 @@
     of python, a language in which I stopped actively programming in
     June 2011 - almost 4 years ago.'''
     
-import numbers
-import operator
-
 class ExprTreeError(Exception):
 	'''base error class for this module'''
 	
