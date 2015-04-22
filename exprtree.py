@@ -269,24 +269,50 @@ class OpFactory:
 			return Divide()
 		
 if __name__ == '__main__':
+	'''if called as a program attempt to analyze as an expression a list
+	   of arguments which form an expression or alternatively if only one
+	   argument, treat it as a string which contains an expression.
+	   
+	   The funky 'aggregated' operation behavior (one op, arity > 2)
+	   affects the analysis of the 'expression' 
+	   
+	   I would write a unit test for this functionality, but I am
+	   unsure of how to implement such a test *robustly* inside the
+	   current suite'''
 	
 	import sys
+	from string import split
 	
 	usage = '%s  num  [ (- + * /)  num ] ... ' % __file__
+
+	position = 0
 	
 	try:
-		
+			
+		# validate and collect expression tokens from argument list
 		if len(sys.argv) < 2:
 			print usage
 			exit(1)
+		elif len(sys.argv) == 2:
+			cmdargs = split(sys.argv[1])
+		else:
+			cmdargs = sys.argv[1:]
 
-		factory = OpFactory()	
-		expr = ExprTree()
-			
+		# create an operation factory from which to generate op nodes
+		factory = OpFactory()
+
+		# not sure we *have* to use a stack, as no op precedence and stack
+		# 'shrinks' on change of operator
 		stack = []	
 		
-		position=0
-		for arg in sys.argv[1:]:
+		# iterate over 'tokens'
+		#
+		# if token is a supported operator, determine if it is of the 
+		# same type as the last. if so, add number to operation which is
+		# already present on stack.  if op is different, pop stack and 
+		# add number to same operation, but then add 'old' operation
+		# as operand to 'new' operation"
+		for arg in cmdargs:
 			position += 1
 			if not arg:
 				print "token %d is empty!" % position
@@ -298,18 +324,14 @@ if __name__ == '__main__':
 						(position, arg)
 						
 				num = stack.pop()
-				print '%s was on stack' % str(num.token())
 				if not stack:
-					print 'stack empty - new op'
 					# first operation
 					newop = factory.createOp(arg)
 					newop.addOperand(num)
 					stack.append(newop)
 				elif stack[-1].token() == arg:
-					print 'stack occupied - same op'
 					stack[-1].addOperand(num)
 				else:
-					print 'stack occupied - different op'
 					newop = factory.createOp(arg)
 					newop.addOperand(stack.pop())
 					newop.lhs().addOperand(num)
@@ -322,18 +344,19 @@ if __name__ == '__main__':
 				exit(1)
 			else:
 				#assume a number
-				try:	
-					stack.append(Num(arg))
-				except NumError:
-					print "token %d: value '%s' cannot be converted to a real number" %\
-						(position, arg)
-					print usage
-					exit(1)
-		
+				stack.append(Num(arg))
+
+		# the terminating token should always be a number
+		# if the stack is empty after popping off the number,
+		# then the expression is degenerative (i.e. a term in the form of
+		# a number)
 		if stack and not isinstance(stack[-1], Num):
 			print "last operation does not have enough numbers"
 			exit(1)
-	
+
+		# don't need to create actual expression tree until now
+		expr = ExprTree()
+        
 		num = stack.pop();
 		if stack:
 			stack[-1].addOperand(num)
@@ -342,12 +365,10 @@ if __name__ == '__main__':
 			expr.root = num
 			
 		print expr.evaluate()
-		print 'size of stack: %d' % len(stack)
 		
 	except Exception as e:
-		print 'error: %s' % e
-	
+		if position:
+			print 'error: token %d: %s' % (position, e)
+		else:
+			print 'error: %s' % e
 
-
-
-   
