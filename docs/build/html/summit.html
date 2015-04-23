@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Developer Reference &mdash; Summit 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Summit 1.0.0 documentation" href="index.html" />
+    <link rel="prev" title="User Manual" href="manual.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="manual.html" title="User Manual"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Summit 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="developer-reference">
+<h1>Developer Reference<a class="headerlink" href="#developer-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-summit.node">
+<span id="summit-node-module"></span><h2>summit.node module<a class="headerlink" href="#module-summit.node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="summit.node.SummitNode">
+<em class="property">class </em><code class="descclassname">summit.node.</code><code class="descname">SummitNode</code><span class="sig-paren">(</span><em>operator</em>, <em>children</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/summit/node.html#SummitNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#summit.node.SummitNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/functions.html#object" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A SummitNode represents a mathematical operator and children &#8220;nodes&#8221; that
+are, at minimum, a pair of real numbers in which the operator is applied to
+starting from the left (first) to right (last) child.</p>
+<p>A more complex tree is possible by, instead of providing terminated leafs
+of real numbers, you may insert another SummitNode as one, or all children.</p>
+<dl class="docutils">
+<dt>Operations allowed:</dt>
+<dd>&#8216;+&#8217; : Perform Addition of all children
+&#8216;-&#8216; : Perform Subtraction across all children
+&#8216;/&#8217; : Perform Division across all children
+&#8216;*&#8217; : Perform Multiplication across all children</dd>
+<dt>Limitations:</dt>
+<dd><ul class="first last">
+<li><dl class="first docutils">
+<dt>There must be a minimum of 2 children per SummitNode instance,</dt>
+<dd><p class="first last">fewer means there is nothing to do, silly.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">All children must terminate as Real Numbers.</p>
+</li>
+<li><dl class="first docutils">
+<dt>You may only perform the operators in the list above</dt>
+<dd><p class="first last">(see: Operations allowed)</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Division by 0 (Zero) is / will always be fatal, tread carefully!</p>
+</li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre>sm = SummitNode(&#39;+&#39;, [1,2,3])
+&gt; print(sm.value)
+6
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="summit.node.SummitNode.children">
+<code class="descname">children</code><a class="headerlink" href="#summit.node.SummitNode.children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="summit.node.SummitNode.operator">
+<code class="descname">operator</code><a class="headerlink" href="#summit.node.SummitNode.operator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="summit.node.SummitNode.value">
+<code class="descname">value</code><a class="headerlink" href="#summit.node.SummitNode.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-summit.exceptions">
+<span id="summit-exceptions-module"></span><h2>summit.exceptions module<a class="headerlink" href="#module-summit.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="summit.exceptions.InvalidOperator">
+<em class="property">exception </em><code class="descclassname">summit.exceptions.</code><code class="descname">InvalidOperator</code><a class="reference internal" href="_modules/summit/exceptions.html#InvalidOperator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#summit.exceptions.InvalidOperator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/exceptions.html#ValueError" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></a></p>
+<p>Raised when a operator is provided that is not a member of the allowed
+set of operators</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="summit.exceptions.NotEnoughChildren">
+<em class="property">exception </em><code class="descclassname">summit.exceptions.</code><code class="descname">NotEnoughChildren</code><a class="reference internal" href="_modules/summit/exceptions.html#NotEnoughChildren"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#summit.exceptions.NotEnoughChildren" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/exceptions.html#ValueError" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></a></p>
+<p>Raised when less than two children were provided, stopping the operation
+chain from completing.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="summit.exceptions.RealNumberExpected">
+<em class="property">exception </em><code class="descclassname">summit.exceptions.</code><code class="descname">RealNumberExpected</code><a class="reference internal" href="_modules/summit/exceptions.html#RealNumberExpected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#summit.exceptions.RealNumberExpected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/exceptions.html#ValueError" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></a></p>
+<p>Raised when a child is expected to be a real number but a different type
+of object/value was provided.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developer Reference</a><ul>
+<li><a class="reference internal" href="#module-summit.node">summit.node module</a></li>
+<li><a class="reference internal" href="#module-summit.exceptions">summit.exceptions module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="manual.html"
+                        title="previous chapter">User Manual</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/summit.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Greg Gullett.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/summit.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>summit.node &mdash; Summit 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Summit 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Summit 1.0.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for summit.node</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">summit.exceptions</span> <span class="kn">import</span> <span class="n">InvalidOperator</span><span class="p">,</span> \
+    <span class="n">NotEnoughChildren</span><span class="p">,</span> <span class="n">RealNumberExpected</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&#39;Greg&#39;</span>
+
+
+<div class="viewcode-block" id="SummitNode"><a class="viewcode-back" href="../../summit.html#summit.node.SummitNode">[docs]</a><span class="k">class</span> <span class="nc">SummitNode</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A SummitNode represents a mathematical operator and children &quot;nodes&quot; that</span>
+<span class="sd">    are, at minimum, a pair of real numbers in which the operator is applied to</span>
+<span class="sd">    starting from the left (first) to right (last) child.</span>
+
+<span class="sd">    A more complex tree is possible by, instead of providing terminated leafs</span>
+<span class="sd">    of real numbers, you may insert another SummitNode as one, or all children.</span>
+
+<span class="sd">    Operations allowed:</span>
+<span class="sd">        &#39;+&#39; : Perform Addition of all children</span>
+<span class="sd">        &#39;-&#39; : Perform Subtraction across all children</span>
+<span class="sd">        &#39;/&#39; : Perform Division across all children</span>
+<span class="sd">        &#39;*&#39; : Perform Multiplication across all children</span>
+
+<span class="sd">    Limitations:</span>
+<span class="sd">        * There must be a minimum of 2 children per SummitNode instance,</span>
+<span class="sd">            fewer means there is nothing to do, silly.</span>
+<span class="sd">        * All children must terminate as Real Numbers.</span>
+<span class="sd">        * You may only perform the operators in the list above</span>
+<span class="sd">            (see: Operations allowed)</span>
+<span class="sd">        * Division by 0 (Zero) is / will always be fatal, tread carefully!</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        sm = SummitNode(&#39;+&#39;, [1,2,3])</span>
+<span class="sd">        &gt; print(sm.value)</span>
+<span class="sd">        6</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;operator&#39;</span><span class="p">,</span> <span class="s">&#39;children&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operator</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configures the SummitNode object with provided operator and children</span>
+<span class="sd">        and requests validation of the provided arguments.</span>
+
+<span class="sd">        :param operator: A string containing one of the following arithmetic</span>
+<span class="sd">            operators [&#39;+&#39;, &#39;-&#39;, &#39;*&#39;, &#39;/&#39;]</span>
+<span class="sd">        :type operator: string</span>
+<span class="sd">        :param children: A list of two or more elements comprised of a mixture</span>
+<span class="sd">            of real numbers and or SummitNodes</span>
+<span class="sd">        :type children: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="n">operator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_operator</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="n">children</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_children</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_validate_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate given operator with the allowed operators list</span>
+
+<span class="sd">        :raises ~summit.exceptions.InvalidOperator:</span>
+<span class="sd">            If operator not in allowed list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">op_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">op_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidOperator</span><span class="p">(</span>
+                <span class="s">&#39;Please provide one of the following operators [ </span><span class="si">%s</span><span class="s"> ]&#39;</span>
+                <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">op_list</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_validate_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate that at least two children were provided</span>
+
+<span class="sd">        :raises ~summit.exceptions.NotEnoughChildren: If fewer than two</span>
+<span class="sd">            children were provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">child_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">child_count</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NotEnoughChildren</span><span class="p">(</span>
+                <span class="s">&#39;Expected two or more children, </span><span class="si">%d</span><span class="s"> provided&#39;</span> <span class="o">%</span> <span class="n">child_count</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_child_value</span><span class="p">(</span><span class="n">child</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the value from the given child.</span>
+<span class="sd">        In the case of a SummitNode instance, this is the SumitNode.value</span>
+<span class="sd">        attribute, otherwise, it attempts to cast the value as a float and will</span>
+<span class="sd">        return the result.</span>
+
+<span class="sd">        :param child: A child from SummitNode.children, may be an int/float or</span>
+<span class="sd">            another SummitNode instance</span>
+<span class="sd">        :type child: int, float, ~summit.node.SummitNode</span>
+<span class="sd">        :raises ~summit.exceptions.RealNumberExpected: Raised for a child value</span>
+<span class="sd">            other than SummitNode or an int/float</span>
+<span class="sd">        :return: The value of the given child</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">SummitNode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">child</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tmp_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">tmp_val</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.0&quot;</span><span class="p">):</span>
+                    <span class="n">tmp_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">tmp_val</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RealNumberExpected</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RealNumberExpected</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_divide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs division operation using subjects x - y.</span>
+
+<span class="sd">        :param x: the dividend</span>
+<span class="sd">        :type x: float</span>
+<span class="sd">        :param y: the divisor to be applied to the dividend</span>
+<span class="sd">        :raises summit.exceptions.ZeroDivisionError: Raised when division by</span>
+<span class="sd">            zero is attempted</span>
+<span class="sd">        :returns: The result of the division</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ZeroDivisionError</span><span class="p">(</span>
+                <span class="s">&#39;Cannot divide by zero, result is not real&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="c"># Integer division for base integers</span>
+            <span class="k">return</span> <span class="n">x</span> <span class="o">//</span> <span class="n">y</span>
+
+        <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span>
+
+    <span class="k">def</span> <span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate the children against the provided operator, returns result of</span>
+<span class="sd">        evaluation</span>
+
+<span class="sd">        :returns: The result of evaluating children in the currentSummitNode</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">op_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;+&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span>
+            <span class="s">&#39;-&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span>
+            <span class="s">&#39;*&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span>
+            <span class="s">&#39;/&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_divide</span>
+        <span class="p">}</span>
+
+        <span class="n">operation</span> <span class="o">=</span> <span class="n">op_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">]</span>
+        <span class="n">start_val</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">subject</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_child_value</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start_val</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># Set basis for operation, need a value to work against!</span>
+                <span class="n">start_val</span> <span class="o">=</span> <span class="n">subject</span>
+                <span class="k">continue</span>
+            <span class="n">start_val</span> <span class="o">=</span> <span class="n">operation</span><span class="p">(</span><span class="n">start_val</span><span class="p">,</span> <span class="n">subject</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">start_val</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Greg Gullett.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
