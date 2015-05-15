@@ -17,6 +17,16 @@ class Node(object):
     else:
       raise ValueError("""'value' must be a real number, or a string
                         representing a real number or operator (+-/*)""")
+  def __verify__(self):
+    pass
+  def __str__(self):
+    pass
+  def __call__(self):
+    if self.__verify__():
+      return eval(str(self))
+    else:
+      raise ValueError("""Each Branch Node needs at least 2 sub-Nodes in order
+                        to be correctly evaluated.""")
 
 class BranchNode(Node):
 
@@ -48,6 +58,15 @@ class BranchNode(Node):
       newStr += "{}{}".format(self.value,childValue)
     return newStr + ")"
 
+  def __verify__(self):
+    if len(self.children) > 1:
+      verified = True
+      for child in self.children:
+        verified = (verified & child.__verify__())
+      return verified
+    else:
+      return False
+
 
 class LeafNode(Node):
   def __init__(self, value, *children):
@@ -64,5 +83,5 @@ class LeafNode(Node):
   def __str__(self):
     return "({})".format(self.value)
 
-  def __call__(self):
-    return self.value
+  def __verify__(self):
+    return True
