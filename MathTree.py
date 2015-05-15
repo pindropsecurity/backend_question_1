@@ -8,26 +8,26 @@ class Node(object):
     strValue = str(value)
     if operationForm.match(strValue):
       obj = super().__new__(BranchNode)
-      obj.__init__(value, *children)
+      #obj.__init__(value, *children)
       return obj
     elif numberForm.match(strValue):
       obj = super().__new__(LeafNode)
-      obj.__init__(value, *children)
+      #obj.__init__(value, *children)
       return obj
     else:
       raise ValueError("""'value' must be a real number, or a string
                         representing a real number or operator (+-/*)""")
 
-class BranchNode(object):
-  children = []
+class BranchNode(Node):
 
-  def __init__(self, value, *children, isRoot=False):
+  def __init__(self, value, *children):
     if operationForm.match(value):
       self.value = value
     else:
       raise ValueError("""'value' must an operator (+-*/) for instantiating a
                         BranchNode. For mixed Node instantiation, please use
                         Node(value, *children).""")
+    self.children = []
     for arg in children:
       if isinstance(arg, list) | isinstance(arg, tuple):
         for child in arg:
@@ -37,9 +37,17 @@ class BranchNode(object):
 
   def addChild(self, child):
     if not isinstance(child, Node):
-      raise TypeError("Child node must be of type Node")
+      raise TypeError("""Child node must be subclass of type Node
+                        i.e. BranchNode or LeafNode""")
     else:
       self.children.append(child)
+
+  def __str__(self):
+    newStr = "(" + str(self.children[0])
+    for childValue in self.children[1:]:
+      newStr += "{}{}".format(self.value,childValue)
+    return newStr + ")"
+
 
 class LeafNode(Node):
   def __init__(self, value, *children):
@@ -51,4 +59,10 @@ class LeafNode(Node):
                         LeafNode. For mixed Node instantiation, please use
                         Node(value, *children).""")
     if len(children) > 0:
-      raise TypeError("""A LeafNode cannot have child nodes.""")
+      raise TypeError("""A LeafNode cannot have children nodes.""")
+
+  def __str__(self):
+    return "({})".format(self.value)
+
+  def __call__(self):
+    return self.value

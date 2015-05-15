@@ -16,6 +16,24 @@ class NodeTestCase(unittest.TestCase):
     self.assertFalse(isinstance(self.child_node_A, BranchNode))
     self.assertFalse(isinstance(self.child_node_B, BranchNode))
 
+  def test_addChild(self):
+    with self.assertRaises(AttributeError):
+      self.child_node_A.addChild(Node('3'))
+
+    newChild_C, newChild_D = Node('1'), Node('-')
+    newParent = Node('+',[newChild_C])
+    newParent.addChild(newChild_D)
+    self.assertTrue(newChild_D in newParent.children)
+    self.assertTrue(newChild_C in newParent.children)
+
+  def test_LeafNode_values(self):
+    self.assertEqual(str(self.child_node_A),'(-3.14)')
+    self.assertEqual(self.child_node_A(),-3.14)
+
+  def test_BranchNode_values(self):
+    newRoot = Node('+',(Node(3),Node(1)),Node('-',Node(5),Node(2)))
+    self.assertEqual(str(newRoot),"""((3.0)+(1.0)+((5.0)-(2.0)))""")
+
   # def test_addChild(self):
   #   self.assertEqual(len(self.parent_node),5)
 
