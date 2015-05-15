@@ -4,15 +4,16 @@ numberForm = re.compile("^-?\d*\.?\d*$")
 operationForm = re.compile("^[+-/*/]$")
 
 class Node(object):
+  """A general Node class used in the creation of its subclasses, BranchNode and 
+    LeafNode. *children should only be included in the instantiation of 
+    BranchNodes""" 
   def __new__(cls, value, *children):
     strValue = str(value)
     if operationForm.match(strValue):
       obj = super().__new__(BranchNode)
-      #obj.__init__(value, *children)
       return obj
     elif numberForm.match(strValue):
       obj = super().__new__(LeafNode)
-      #obj.__init__(value, *children)
       return obj
     else:
       raise ValueError("""'value' must be a real number, or a string
@@ -29,7 +30,10 @@ class Node(object):
                         to be correctly evaluated.""")
 
 class BranchNode(Node):
-
+  """A sublcass of Node, this class should never be called directly. To create 
+    BranchNode, call Node(value, *children), where value should be a single 
+    character string of +, -, *, or /. children is an optional parameter which
+    is a list of all subnodes for this node."""
   def __init__(self, value, *children):
     if operationForm.match(value):
       self.value = value
@@ -69,6 +73,11 @@ class BranchNode(Node):
 
 
 class LeafNode(Node):
+  """A subclass of Node, this class should never be called directly. To create
+    a LeafNode, call Node(value), where 'value' is a either an int, float, or
+    string representaiton of a real number. All values will be converted to
+    a float format. Every branch of nodes in a Node treem should be terminated
+    with a LeafNode."""
   def __init__(self, value, *children):
     strValue = str(value)
     if numberForm.match(strValue):

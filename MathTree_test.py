@@ -42,11 +42,5 @@ class NodeTestCase(unittest.TestCase):
     with self.assertRaises(ValueError):
       self.parent_node()
 
-  # def test_addChild(self):
-  #   self.assertEqual(len(self.parent_node),5)
-
-  # def test_str_cast(self):
-  #   self.assertEqual(str(self.parent_node),"((3)+(-12.18)+((4)-(2)))")
-
 if __name__ == "__main__":
   unittest.main()
