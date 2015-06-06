@@ -1,0 +1,11 @@
+I tried to put comments in the code wherever possible, but here is a high-level overview:
+
+1. nodefactory.py - contains all the relevant classes and functions. The most relevant are Node, MathNode, and math_tree_calculator. Also of note are the data generation functions which are used for testing.
+
+2. tests.py - very simple unit tests using simple assert statements testing as many iterations of things I feel could go wrong as possible, as well as the optional choice at the end to generate a random tree and attempt to calculate it.
+
+3. employeeprojects.sql - all the SQL statements as I understood them. See comments for my answer about indexes.
+
+Abel Mohler
+abel@wayfarerweb.com
+828-713-3003
