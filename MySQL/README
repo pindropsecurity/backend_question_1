@@ -1,0 +1,12 @@
+file shopfloor.sql is the dump of my database.
+file query.sql is the query to generate the report being asked for.
+
+
+mysql shopfloor -t < query.sql 
++---------------+-----------+------+
+| Project       | Total     | Avg  |
++---------------+-----------+------+
+| Big Money App | 300000.01 |   34 |
+| Mad Cash App  |    200000 |   33 |
++---------------+-----------+------+
+
